@@ -53,4 +53,7 @@ dkms.conf
 
 # ADICIONAIS
 build
+.dist
+.vs
+.vscode
 testes
