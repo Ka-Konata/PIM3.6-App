@@ -29,24 +29,22 @@ char bd_professores_arr[50][8][200];
 // Código Principal
 int main(void)
 {
-	// setlocale(LC_ALL, );
+	setlocale(LC_ALL, ""); // Definição padrão do idioma
+
 	// Defininfo funções
 	void load_bd();
-	//void save_bd();
+	void save_bd();
 
 	load_bd(); // Carrega o as informações já salvas
-	//save_bd();
+	save_bd(); // Salva as informações
 
-	// printf("Arquivo aberto/criado com sucesso!\n"); //DEBUG
-	// printf("bd_alunos: %s\n", bd_alunos); //DEBUG
-
-	for (int i = 0; i < 11; i++)
-	{
-		for (int c1 = 0; c1 < 5; c1++)
-		{
-			printf("%s\n", bd_disciplinas_arr[i][c1]);
-		}
-	}
+	// for (int i = 0; i < 11; i++)
+	//{
+	//	for (int c1 = 0; c1 < 4; c1++)
+	//	{
+	//		printf("%s\n", bd_disciplinas_arr[i][c1]);
+	//	}
+	// }
 
 	// fclose(f);
 	system("pause");
@@ -54,11 +52,11 @@ int main(void)
 
 void load_bd()
 {
-	//  Definindo funções
+	// Definindo funções
 	char get_bd_as_a_vector(char *bd, char *which_bd, const int TABLE_RANGE);
 
 	// Abre os arquivos
-	FILE *f_alunos = fopen(BD_ALUNOS_PATH, "r"); 
+	FILE *f_alunos = fopen(BD_ALUNOS_PATH, "r");
 	FILE *f_cursos = fopen(BD_CURSOS_PATH, "r");
 	FILE *f_turmas = fopen(BD_TURMAS_PATH, "r");
 	FILE *f_disciplinas = fopen(BD_DISCIPLINAS_PATH, "r");
@@ -72,7 +70,7 @@ void load_bd()
 	fread(bd_professores, BD_SIZE, 1, f_professores);
 
 	// Converte as informações em matrizes 3d
-	get_bd_as_a_vector(bd_alunos, "alunos", 8);	 
+	get_bd_as_a_vector(bd_alunos, "alunos", 8);
 	get_bd_as_a_vector(bd_cursos, "cursos", 4);
 	get_bd_as_a_vector(bd_turmas, "turmas", 4);
 	get_bd_as_a_vector(bd_disciplinas, "disciplinas", 5);
@@ -86,40 +84,80 @@ void load_bd()
 	fclose(f_professores);
 }
 
-/**
-void save_bd() {
-	// Definindo variáveis
-	char new_file[BD_SIZE] = "{", table_num[1] = " ";
+void save_bd()
+{
+	// Definindo funções
+	char construct_bd_string(char *which_bd, char *file_path, int table_range, const int VALUE_RANGE);
 
-	// Abre os arquivos
-	FILE *f_alunos = fopen(BD_ALUNOS_PATH, "r"); 
-	FILE *f_cursos = fopen(BD_CURSOS_PATH, "r");
-	FILE *f_turmas = fopen(BD_TURMAS_PATH, "r");
-	FILE *f_disciplinas = fopen(BD_DISCIPLINAS_PATH, "r");
-	FILE *f_professores = fopen(BD_PROFESSORES_PATH, "r");
-
-    sprintf(table_num, "%d", 1);
-
-    FILE *f = fopen("../bd/tt.json", "w+");
-
-    strcat(new_file, "{");
-    strcat(new_file, "\"");
-    strncat(new_file, table_num, 1);
-
-    strcat(new_file, "\":");
-    strcat(new_file, "[\"1\",\"2\",\"3\",\"4\"]");
-    strcat(new_file, "}");
-
-    printf("%s\n", new_file);
-
-	// Fecha os arquivos
-	fclose(f_alunos);
-	fclose(f_cursos);
-	fclose(f_turmas);
-	fclose(f_disciplinas);
-	fclose(f_professores);
+	construct_bd_string("alunos", BD_ALUNOS_PATH, 500, 8);
+	construct_bd_string("cursos", BD_CURSOS_PATH, 20, 4);
+	construct_bd_string("turmas", BD_TURMAS_PATH, 100, 4);
+	construct_bd_string("disciplinas", BD_DISCIPLINAS_PATH, 300, 5);
+	construct_bd_string("professores", BD_PROFESSORES_PATH, 50, 8);
 }
-**/
+
+char construct_bd_string(char *which_bd, char *file_path, int table_range, const int VALUE_RANGE)
+{
+	// Definindo variáveis
+	char new_file_complete[800000] = "{", // Arquivo após compactado em uma única string
+		new_file[800000] = " ",			  // Arquivo (vai sofrer muitas alterações)
+		(*bd_arr)[VALUE_RANGE][200],	  // Matriz do bd a ser usada
+		table_num[2] = " ";				  // Para auxilar na criação da strig
+	int i, j;							  // Contadores
+
+	FILE *f = fopen(file_path, "w"); // Abre o arquivo escolhido
+
+	// Estrutura para verifica qual arquivo foi escolhido para processar
+	if (which_bd == "alunos")	// Caso seja alunos
+		bd_arr = bd_alunos_arr; // O ponteiro aponta para a matriz alunos
+	else if (which_bd == "cursos")
+		bd_arr = bd_cursos_arr;
+	else if (which_bd == "turmas")
+		bd_arr = bd_turmas_arr;
+	else if (which_bd == "disciplinas")
+		bd_arr = bd_disciplinas_arr;
+	else if (which_bd == "professores")
+		bd_arr = bd_professores_arr;
+
+	for (i = 0; i < table_range; i++) // Para cada table
+	{
+		sprintf(table_num, "%d", i);		   // Define o número da table como string
+		memset(new_file, 0, strlen(new_file)); // Evita um problema, limpando a variavel new_file
+		strcat(new_file, "\"");				   // Acrescenta uma " à string
+
+		if (i < 10)							 // Caso o numero da table seja menor que 10
+			strncat(new_file, table_num, 1); // Acrescenta o numero da table à string
+		else								 // Caso o numero da table seja maior que 10
+			strncat(new_file, table_num, 2); // Acrescenta o numero da table à string
+		strcat(new_file, "\":[");			 // Acrescenta "outra " e um [ à string
+
+		for (j = 0; j < VALUE_RANGE; j++) // Para cada valor da table
+		{
+			strcat(new_file, bd_arr[i][j]); // Acrescenta o valor à string
+			if (j != VALUE_RANGE - 1)		// Verifica se precisa ou não da virgula
+				strcat(new_file, ",");		// Acrescenta a virgula
+		}
+
+		strcat(new_file, "]");					// Acrescenta um ] à string
+		if (strstr(bd_arr[i][j], "\"") == NULL) // Verifica se ainda tem informações na matriz para salvar
+		{
+			strcat(new_file_complete, new_file); // Insere as alterações na variavel new_file_complete
+			break;								 // Encerra o laço antecipadamente
+		}
+		if (i != (table_range - 1)) // Verifica se já processou a matriz completamente
+		{
+			strcat(new_file, ","); // Acrescenta uma , à string
+		}
+		strcat(new_file_complete, new_file); // Insere as alterações na variavel new_file_complete
+	}
+
+	strcat(new_file_complete, "}"); // Fecha a string com uma }
+	fputs(new_file_complete, f);	// Salva as informações no arquivo
+	fclose(f);						// Fecha o arquivo
+
+	free(new_file_complete); // Limpa
+	free(new_file);			 // Limpa
+}
 
 char get_bd_as_a_vector(char *bd, char *which_bd, const int TABLE_RANGE)
 {
