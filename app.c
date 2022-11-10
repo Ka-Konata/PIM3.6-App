@@ -1,4 +1,5 @@
 // Inserindo bibliotecas
+#include <conio.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <locale.h>
@@ -35,18 +36,34 @@ int main(void)
 	void load_bd();
 	void save_bd();
 
+	// Defininfo variáveis
+	int run = 1, answer;
+
+	// Iniciando o programa
+	printf("Bem vindo(a)\n\n");
+	printf("Pressione Enter para continuar....");
+	//system("cls");
+
+	while (run == 1)
+	{
+		printf("=========================================\n");
+		printf("| MENU PRINCIPAL                        |\n");
+		printf("=========================================\n");
+		printf("| [1] - Realizar Cadastro               |\n");
+		printf("| [2] - Acessar Cadastro                |\n");
+		printf("| [3] - Encerrar Programa               |\n");
+		printf("=========================================\n");
+		printf("\nInsira o numero referente a funcao que voce deseja utilizar: ");
+		scanf("%d", &answer);
+
+		//system("cls");
+		printf("%d\n", answer);
+		break;
+	}
+
 	load_bd(); // Carrega o as informações já salvas
 	save_bd(); // Salva as informações
 
-	// for (int i = 0; i < 11; i++)
-	//{
-	//	for (int c1 = 0; c1 < 4; c1++)
-	//	{
-	//		printf("%s\n", bd_disciplinas_arr[i][c1]);
-	//	}
-	// }
-
-	// fclose(f);
 	system("pause");
 }
 
@@ -222,17 +239,13 @@ char get_bd_as_a_vector(char *bd, char *which_bd, const int TABLE_RANGE)
 		for (int c1 = 0; c1 < (int)(sizeof(table) / sizeof(table[0])); c1++) // Salva as informaçoes na matriz
 		{
 			strcpy(new_bd[count][c1], table[c1]); // Salva a informação
-												  // printf("%s\n", new_bd[count][c1]);
 		}
 
-		// printf("index = %s | table = [%s, %s, %s, %s]\n", index, table[0], table[1], table[2], table[3]);
-		// printf("bd_clear = %s\n", bd_clear);
 
 		count++;							 // Soma contador
 		if (strstr(bd_clear, "\":") == NULL) // Flag | verifica se é para encerrar o laço
 			break;							 // Encerra o laço
 	}
-	// printf("\n\nbd_clear = %s\n", bd_clear);
 }
 
 int get_substr_position(char *source, char *substr)
