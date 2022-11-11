@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <locale.h>
 #include <string.h>
+#include <conio.h>
 //#include <json.c/json.h>
 
 // Definindo constantes
@@ -12,6 +13,12 @@
 #define BD_DISCIPLINAS_PATH "bd/bd_disciplinas.json"
 #define BD_PROFESSORES_PATH "bd/bd_professores.json"
 #define BD_SIZE 1024
+// Cores
+#define red "\x1b[31m"
+#define green "\x1b[32m"
+#define blue "\x1b[34m"
+#define default "\x1b[0m"
+
 
 // Para armazenar os arquivos em strings
 char bd_alunos[BD_SIZE] = {0};
@@ -43,7 +50,7 @@ int main(void)
 	// Iniciando o programa
 	printf("Bem vindo(a)\n\n");
 	check_bd();
-	system("pause");
+	//system("pause");
 	system("cls");
 
 	while (run == 1)
@@ -56,11 +63,20 @@ int main(void)
 		printf("| [3] - Encerrar Programa               |\n");
 		printf("=========================================\n");
 		printf("\nInsira o numero referente a funcao que voce deseja utilizar: ");
-		scanf("%d", &answer);
+		if (!scanf("%d", &answer)) scanf("%*[^\n]");
+		//printf("%d\n", answer);
 
-		system("cls");
-		printf("%d\n", answer);
-		break;
+		if(answer == 3) {
+			system("cls");
+			printf("Encerrando Programa.\n");
+			break;
+		}
+
+		else {
+			system("cls");
+			printf(red "Algo deu errado. Por favor, leia tente novamente.\n\n" default);
+		}
+
 	}
 
 	load_bd(); // Carrega o as informações já salvas
@@ -128,7 +144,7 @@ void check_bd() {
 
 			fputs(reset_bd[i], f);
 			fclose(f);
-			printf("Arquivo [%s] nao encontrado... Criado com sucesso\n", paths[i]);
+			printf(red "Arquivo [%s] nao encontrado... Criado com sucesso\n" default, paths[i]);
 		}
 	}
 }
