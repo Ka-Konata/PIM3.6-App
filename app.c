@@ -1,5 +1,4 @@
 // Inserindo bibliotecas
-#include <conio.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <locale.h>
@@ -28,6 +27,7 @@ char bd_disciplinas_arr[300][5][200];
 char bd_professores_arr[50][8][200];
 
 // Código Principal
+// Código Principal
 int main(void)
 {
 	setlocale(LC_ALL, ""); // Definição padrão do idioma
@@ -35,14 +35,16 @@ int main(void)
 	// Defininfo funções
 	void load_bd();
 	void save_bd();
+	void check_bd();
 
 	// Defininfo variáveis
 	int run = 1, answer;
 
 	// Iniciando o programa
 	printf("Bem vindo(a)\n\n");
-	printf("Pressione Enter para continuar....");
-	//system("cls");
+	check_bd();
+	system("pause");
+	system("cls");
 
 	while (run == 1)
 	{
@@ -56,7 +58,7 @@ int main(void)
 		printf("\nInsira o numero referente a funcao que voce deseja utilizar: ");
 		scanf("%d", &answer);
 
-		//system("cls");
+		system("cls");
 		printf("%d\n", answer);
 		break;
 	}
@@ -111,6 +113,24 @@ void save_bd()
 	construct_bd_string("turmas", BD_TURMAS_PATH, 100, 4);
 	construct_bd_string("disciplinas", BD_DISCIPLINAS_PATH, 300, 5);
 	construct_bd_string("professores", BD_PROFESSORES_PATH, 50, 8);
+}
+
+void check_bd() {
+	char paths[5][25] = {"bd/bd_alunos.json", "bd/bd_cursos.json", "bd/bd_turmas.json", "bd/bd_disciplinas.json", "bd/bd_professores.json"};
+	// Para criar os arquivos caso necessário
+	char reset_bd[5][150] = {"{\"0\":[\"numero de matricula\",\"nome completo\",\"RG\",\"CPF\",\"nome do pai\",\"nome da mae\",\"telefone\",\"e-mail\"]}", "{\"0\":[\"codigo do curso\",\"nome do curso\",\"carga horaria total\",\"areas do conhecimento\"]}", "{\"0\":[\"codigo da turma\",\"nome da turma\",\"periodo\",\"limite maximo de alunos matriculados\"]}", "{\"0\":[\"codigo da disciplina\",\"nome da disciplina\",\"carga horaria semanal\",\"carga horaria total\",\"tipo\"]}", "{\"0\":[\"numero da funcional\",\"nome completo\",\"titularidade\",\"RG\",\"CPF\",\"CPTS\",\"telefone\",\"e-mail\"]}"};
+
+	for(int i=0; i<5; i++) {
+		FILE *actual_file = fopen(paths[i], "r");
+		if(!actual_file) {
+			mkdir("bd", 0777);
+			FILE *f = fopen(paths[i], "w+");
+
+			fputs(reset_bd[i], f);
+			fclose(f);
+			printf("Arquivo [%s] nao encontrado... Criado com sucesso\n", paths[i]);
+		}
+	}
 }
 
 char construct_bd_string(char *which_bd, char *file_path, int table_range, const int VALUE_RANGE)
@@ -239,13 +259,17 @@ char get_bd_as_a_vector(char *bd, char *which_bd, const int TABLE_RANGE)
 		for (int c1 = 0; c1 < (int)(sizeof(table) / sizeof(table[0])); c1++) // Salva as informaçoes na matriz
 		{
 			strcpy(new_bd[count][c1], table[c1]); // Salva a informação
+												  // printf("%s\n", new_bd[count][c1]);
 		}
 
+		// printf("index = %s | table = [%s, %s, %s, %s]\n", index, table[0], table[1], table[2], table[3]);
+		// printf("bd_clear = %s\n", bd_clear);
 
 		count++;							 // Soma contador
 		if (strstr(bd_clear, "\":") == NULL) // Flag | verifica se é para encerrar o laço
 			break;							 // Encerra o laço
 	}
+	// printf("\n\nbd_clear = %s\n", bd_clear);
 }
 
 int get_substr_position(char *source, char *substr)
