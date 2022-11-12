@@ -7,18 +7,18 @@
 //#include <json.c/json.h>
 
 // Definindo constantes
+// Cores
+#define red "\x1b[31m"
+#define green "\x1b[32m"
+#define blue "\x1b[34m"
+#define default "\x1b[0m"
+// Path para os arquivos .json
 #define BD_ALUNOS_PATH "bd/bd_alunos.json"
 #define BD_CURSOS_PATH "bd/bd_cursos.json"
 #define BD_TURMAS_PATH "bd/bd_turmas.json"
 #define BD_DISCIPLINAS_PATH "bd/bd_disciplinas.json"
 #define BD_PROFESSORES_PATH "bd/bd_professores.json"
 #define BD_SIZE 1024
-// Cores
-#define red "\x1b[31m"
-#define green "\x1b[32m"
-#define blue "\x1b[34m"
-#define default "\x1b[0m"
-
 
 // Para armazenar os arquivos em strings
 char bd_alunos[BD_SIZE] = {0};
@@ -43,14 +43,24 @@ int main(void)
 	void load_bd();
 	void save_bd();
 	void check_bd();
+	char* ask_and_validate_info(char *title, char *info, char*requirements, char *example, int (*validade_func)(char *));
+	int validade_numero(char *numero);
 
 	// Defininfo variáveis
-	int run = 1, answer;
+	int run = 1, answer_menu, answer_cadastrar, answer_acessar;
+	// char cad_aluno_matricula[10], cad_aluno_nomecompleto[200], cad_aluno_rg[12], cad_aluno_cpf[14], cad_aluno_nomepai[200], cad_aluno_nomemae[200], cad_aluno_telefone[20], cad_aluno_email[200];
+	char *to_validate,
+		 dados_cadastro_aluno[8][200],
+		 dados_cadastro_curso[4][200],
+		 dados_cadastro_turma[4][200],
+		 dados_cadastro_disciplina[5][200],
+		 dados_cadastro_professor[8][200];
 
 	// Iniciando o programa
 	printf("Bem vindo(a)\n\n");
 	check_bd();
-	//system("pause");
+	printf("Pressione ENTER para continuar...");
+	getch();
 	system("cls");
 
 	while (run == 1)
@@ -63,26 +73,111 @@ int main(void)
 		printf("| [3] - Encerrar Programa               |\n");
 		printf("=========================================\n");
 		printf("\nInsira o numero referente a funcao que voce deseja utilizar: ");
-		if (!scanf("%d", &answer)) scanf("%*[^\n]");
-		//printf("%d\n", answer);
+		if (!scanf("%d", &answer_menu))
+			scanf("%*[^\n]");
 
-		if(answer == 3) {
+		if (answer_menu == 1)
+		{
+			while (run = 1)
+			{
+				system("cls");
+
+				printf("=========================================\n");
+				printf("| REALIZAR CADASTRO                     |\n");
+				printf("=========================================\n");
+				printf("| [1] - Cadastrar Aluno                 |\n");
+				printf("| [2] - Cadastrar Curso                 |\n");
+				printf("| [3] - Cadastrar Turma                 |\n");
+				printf("| [4] - Cadastrar Disciplina            |\n");
+				printf("| [5] - Cadastrar Professor             |\n");
+				printf("| [6] - Voltar                          |\n");
+				printf("=========================================\n");
+				printf("\nInsira o numero referente a funcao que voce deseja utilizar: ");
+				if (!scanf("%d", &answer_cadastrar))
+					scanf("%*[^\n]");
+
+				if (answer_cadastrar == 1)
+				{
+					system("cls");
+
+					*to_validate = ask_and_validate_info("ALUNO", "numero de matricula", "8 digitos, sem espacos ou simbolos", "12345678", validade_numero);
+					if (to_validate == NULL) break;
+					strcpy(dados_cadastro_aluno[0], to_validate);
+					printf("%s", dados_cadastro_aluno[0]);
+					getch();
+
+					system("cls");
+				}
+
+				system("cls");
+			}
+		}
+
+		else if (answer_menu == 2)
+		{
+			system("cls");
+			printf("ACESSAR CADASTRO.\n");
+			printf("Pressione ENTER para continuar...");
+			getch();
+			system("cls");
+		}
+
+		else if (answer_menu == 3)
+		{
 			system("cls");
 			printf("Encerrando Programa.\n");
 			break;
 		}
 
-		else {
+		else
+		{
 			system("cls");
-			printf(red "Algo deu errado. Por favor, leia tente novamente.\n\n" default);
+			printf(red "Algo deu errado. Por favor, leia e tente novamente.\n\n" default);
 		}
-
 	}
 
 	load_bd(); // Carrega o as informações já salvas
 	save_bd(); // Salva as informações
 
 	system("pause");
+}
+
+char* ask_and_validate_info(char *title, char *info, char *requirements, char *example, int (*validade_func)(char *)) 
+{
+	int run = 1, c = 0;
+	char answer[200], cancel[200] = "cancelar";
+	
+	while (run = 1)
+	{
+		printf("================ CADASTRANDO %s ================\n", title);
+		printf(green "\nRequisitos: %s \nExemplo: %s" default, requirements, example);
+		printf("\n\nDigite cancelar para interromper o cadastro\nInforme (%s): ", info);
+		gets(answer);
+
+		if(strcmp(answer, cancel) == 0)
+		{
+			system("cls");
+			return NULL;
+		}
+		else if((*validade_func)(answer)) 
+		{
+			system("cls");
+			return answer;
+		}
+		else 
+		{
+			system("cls");
+			if(c>0)printf(red "Algo deu errado. Verifique os requisitos e tente novamente.\n\n" default);
+		}
+		c++;
+	}
+	
+}
+
+int validade_matricula(char *numero_de_matricula)
+{
+	printf("\nvalidate - %s", numero_de_matricula);
+	return 0;
 }
 
 void load_bd()
@@ -131,20 +226,24 @@ void save_bd()
 	construct_bd_string("professores", BD_PROFESSORES_PATH, 50, 8);
 }
 
-void check_bd() {
+void check_bd()
+{
 	char paths[5][25] = {"bd/bd_alunos.json", "bd/bd_cursos.json", "bd/bd_turmas.json", "bd/bd_disciplinas.json", "bd/bd_professores.json"};
 	// Para criar os arquivos caso necessário
 	char reset_bd[5][150] = {"{\"0\":[\"numero de matricula\",\"nome completo\",\"RG\",\"CPF\",\"nome do pai\",\"nome da mae\",\"telefone\",\"e-mail\"]}", "{\"0\":[\"codigo do curso\",\"nome do curso\",\"carga horaria total\",\"areas do conhecimento\"]}", "{\"0\":[\"codigo da turma\",\"nome da turma\",\"periodo\",\"limite maximo de alunos matriculados\"]}", "{\"0\":[\"codigo da disciplina\",\"nome da disciplina\",\"carga horaria semanal\",\"carga horaria total\",\"tipo\"]}", "{\"0\":[\"numero da funcional\",\"nome completo\",\"titularidade\",\"RG\",\"CPF\",\"CPTS\",\"telefone\",\"e-mail\"]}"};
 
-	for(int i=0; i<5; i++) {
+	for (int i = 0; i < 5; i++)
+	{
 		FILE *actual_file = fopen(paths[i], "r");
-		if(!actual_file) {
+		if (!actual_file)
+		{
 			mkdir("bd", 0777);
 			FILE *f = fopen(paths[i], "w+");
 
 			fputs(reset_bd[i], f);
 			fclose(f);
 			printf(red "Arquivo [%s] nao encontrado... Criado com sucesso\n" default, paths[i]);
+			sleep(1);
 		}
 	}
 }
