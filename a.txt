@@ -1,0 +1,12 @@
+numero de matricula: A + sequência de 3 números (ex: A350)
+codigo do curso: C + sequência de 2 números (ex: C13)
+codigo da turma: T + sequência de 3 números (ex: T025)
+codigo da disciplina: D + sequência de 3 números (ex: D002)
+numero da funcional: Somente números, sem simbolos ou espaços
+telefone: prefixo +55
+RG: somente sumeros
+CPF: somente numeros, sem simbolos ou espaços
+numero da funcional
+período: manhã, tarde ou noite
+tipo de disciplina: presencial ou EAD
+areas do conhecimento: dentre as pré-definidas

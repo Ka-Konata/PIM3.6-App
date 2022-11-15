@@ -4,6 +4,7 @@
 #include <locale.h>
 #include <string.h>
 #include <conio.h>
+#include <ctype.h>
 //#include <json.c/json.h>
 
 // Definindo constantes
@@ -32,6 +33,8 @@ char bd_cursos_arr[20][4][200];
 char bd_turmas_arr[100][4][200];
 char bd_disciplinas_arr[300][5][200];
 char bd_professores_arr[50][8][200];
+// Para informar erros ao longo da execução
+char *global_error_message;
 
 // Código Principal
 // Código Principal
@@ -43,13 +46,17 @@ int main(void)
 	void load_bd();
 	void save_bd();
 	void check_bd();
-	char* ask_and_validate_info(char *title, char *info, char*requirements, char *example, int (*validade_func)(char *));
-	int validade_numero(char *numero);
+	char* ask_and_validate_info(int skip, char **key_list, char **value_list, int n, char *title, char *info, char *requirements, char *example, int (*validate_func)(char *));
+	int validate_nome(char *numero);
+	int validate_RG(char *RG);
+	int validate_CPF(char *CPF);
+	int validate_telefone(char *telefone);
+	int validate_email(char *email);
 
 	// Defininfo variáveis
 	int run = 1, answer_menu, answer_cadastrar, answer_acessar;
 	// char cad_aluno_matricula[10], cad_aluno_nomecompleto[200], cad_aluno_rg[12], cad_aluno_cpf[14], cad_aluno_nomepai[200], cad_aluno_nomemae[200], cad_aluno_telefone[20], cad_aluno_email[200];
-	char *to_validate,
+	char to_validate[8][200],
 		 dados_cadastro_aluno[8][200],
 		 dados_cadastro_curso[4][200],
 		 dados_cadastro_turma[4][200],
@@ -57,14 +64,19 @@ int main(void)
 		 dados_cadastro_professor[8][200];
 
 	// Iniciando o programa
-	printf("Bem vindo(a)\n\n");
+    printf("\n\n            ____                  __      ___           _       \n           |  _ \\                 \\ \\    / (_)         | |      \n           | |_) | ___ _ __ ___    \\ \\  / / _ _ __   __| | ___  \n           |  _ < / _ \\ '_ ` _ \\    \\ \\/ / | | '_ \\ / _` |/ _ \\ \n           | |_) |  __/ | | | | |    \\  /  | | | | | (_| | (_) |\n           |____/ \\___|_| |_| |_|     \\/   |_|_| |_|\\__,_|\\___/");
+    printf("\n\n\n\n\n           PIM 2nd Semestre | Grupo: DS2.7");
+    printf("\n           Nomes: Victor G. Ramos, Jeferson");
+
 	check_bd();
-	printf("Pressione ENTER para continuar...");
+
+	printf("\n\n           Pressione ENTER para continuar...");
 	getch();
 	system("cls");
 
 	while (run == 1)
 	{
+		answer_menu = NULL;
 		printf("=========================================\n");
 		printf("| MENU PRINCIPAL                        |\n");
 		printf("=========================================\n");
@@ -72,15 +84,16 @@ int main(void)
 		printf("| [2] - Acessar Cadastro                |\n");
 		printf("| [3] - Encerrar Programa               |\n");
 		printf("=========================================\n");
-		printf("\nInsira o numero referente a funcao que voce deseja utilizar: ");
+		printf("\n> Insira o numero referente a funcao que voce deseja utilizar: ");
 		if (!scanf("%d", &answer_menu))
 			scanf("%*[^\n]");
 
 		if (answer_menu == 1)
 		{
+			system("cls");
 			while (run = 1)
 			{
-				system("cls");
+				answer_cadastrar = NULL;
 
 				printf("=========================================\n");
 				printf("| REALIZAR CADASTRO                     |\n");
@@ -92,24 +105,96 @@ int main(void)
 				printf("| [5] - Cadastrar Professor             |\n");
 				printf("| [6] - Voltar                          |\n");
 				printf("=========================================\n");
-				printf("\nInsira o numero referente a funcao que voce deseja utilizar: ");
+				printf("\n> Tipo de cadastro: ");
 				if (!scanf("%d", &answer_cadastrar))
 					scanf("%*[^\n]");
 
 				if (answer_cadastrar == 1)
 				{
 					system("cls");
+					//printf("CADASTRO"); sleep(4); 
+					//**
+					char *key_list[8] = {"numero de matricula", "nome completo", "RG", "CPF", "nome do pai", "nome da mae", "telefone", "e-mail"};
+					char *value_list[8] = {'\0'};
+					//char value_0[200], value_1[200], value_2[200], value_3[200], value_4[200], value_5[200], value_6[200], value_7[200];
+					char value[8][200];
 
-					*to_validate = ask_and_validate_info("ALUNO", "numero de matricula", "8 digitos, sem espacos ou simbolos", "12345678", validade_numero);
-					if (to_validate == NULL) break;
-					strcpy(dados_cadastro_aluno[0], to_validate);
-					printf("%s", dados_cadastro_aluno[0]);
+					ask_and_validate_info(1, key_list, value_list, 8, "LIMPA", "LIMPA", "LIMPA", "LIMPA", validate_nome); // TESTE TESTE
+
+					// numero de matricula
+					strcpy(value[0], "A001");
+					strcpy(dados_cadastro_aluno[0], "A001");
+					value_list[0] = value[0];
+
+					// nome completo
+					strcpy(value[1], ask_and_validate_info(1, key_list, value_list, 8, "ALUNO", "nome completo", "somente letras, inclua espacos", "pedro alberto", validate_nome));
+					
+					strcpy(dados_cadastro_aluno[1], value[1]);
+					value_list[1] = value[1];
+					if (strcmp(value_list[1], "⤬") == 0) break;
+
+					// RG
+					strcpy(value[2], ask_and_validate_info(1, key_list, value_list, 8, "ALUNO", "RG", "somente numeros, sem  simbolos ou espacos", "1234567890", validate_RG));
+
+					strcpy(dados_cadastro_aluno[2], value[2]);
+					value_list[2] = value[2];
+					if (strcmp(value_list[2], "⤬") == 0) break;
+
+					//printf("value[0:%s] value[1:%s] value[2:%s]\n", value[0], value[1], value[2]);sleep(1);
+					//printf("value_list[0:%s] value_list[1:%s] value_list[2:%s]\n", value_list[0], value_list[1], value_list[2]);sleep(1);
+
+					// CPF
+					strcpy(value[3], ask_and_validate_info(1, key_list, value_list, 8, "ALUNO", "CPF", "somente numeros, sem  simbolos ou espacos", "02212533330", validate_CPF));
+
+					strcpy(dados_cadastro_aluno[3], value[3]);
+					value_list[3] = value[3];
+					if (strcmp(value_list[3], "⤬") == 0) break;
+
+					// nome do pai
+					strcpy(value[4], ask_and_validate_info(1, key_list, value_list, 8, "ALUNO", "nome do pai", "somente letras, inclua espacos", "pedro alberto", validate_nome));
+					
+					strcpy(dados_cadastro_aluno[4], value[4]);
+					value_list[4] = value[4];
+					if (strcmp(value_list[4], "⤬") == 0) break;
+
+					// nome da mae
+					strcpy(value[5], ask_and_validate_info(1, key_list, value_list, 8, "ALUNO", "nome da mae", "somente letras, inclua espacos", "pedro alberto", validate_nome));
+					
+					strcpy(dados_cadastro_aluno[5], value[5]);
+					value_list[5] = value[5];
+					if (strcmp(value_list[5], "⤬") == 0) break;
+
+					// telefone
+					strcpy(value[6], "+55 ");
+					strcat(value[6], ask_and_validate_info(1, key_list, value_list, 8, "ALUNO", "telefone", "NAO COLOQUE O +55, somente numeros, sem  simbolos ou espacos, o nono digito (9) e obrigatorio", "911119999", validate_telefone));
+					
+					strcpy(dados_cadastro_aluno[6], value[6]);
+					value_list[6] = value[6];
+					if (strcmp(value_list[6], "⤬") == 0) break;
+
+					// nome da mae
+					strcpy(value[7], ask_and_validate_info(1, key_list, value_list, 8, "ALUNO", "e-mail", "@ e provedor obrigatorio", "exemplo123@gmail.com", validate_email));
+					
+					strcpy(dados_cadastro_aluno[7], value[7]);
+					value_list[7] = value[7];
+					if (strcmp(value_list[7], "⤬") == 0) break;
+
 					getch();
-
 					system("cls");
 				}
 
-				system("cls");
+				/**OUTROS*/
+
+				else if (answer_cadastrar == 6) {
+					system("cls");
+					break;
+				}
+
+				else
+				{
+					system("cls");
+					printf(red "Algo deu errado. Por favor, leia e tente novamente.\n\n" default);
+				}
 			}
 		}
 
@@ -142,42 +227,113 @@ int main(void)
 	system("pause");
 }
 
-char* ask_and_validate_info(char *title, char *info, char *requirements, char *example, int (*validade_func)(char *)) 
+char* ask_and_validate_info(int skip, char **key_list, char **value_list, int n, char *title, char *info, char *requirements, char *example, int (*validate_func)(char *)) 
 {
 	int run = 1, c = 0;
-	char answer[200], cancel[200] = "cancelar";
+	char answer[200], cancel[200] = "cancelar", *ptr;
 	
 	while (run = 1)
 	{
-		printf("================ CADASTRANDO %s ================\n", title);
-		printf(green "\nRequisitos: %s \nExemplo: %s" default, requirements, example);
-		printf("\n\nDigite cancelar para interromper o cadastro\nInforme (%s): ", info);
+		printf("=================== CADASTRANDO %s ===================\n\n", title);
+		for (int i = 0; i < n; i++)
+		{
+			printf("\n%s: ", key_list[i]);
+			if(value_list[i] != NULL)  printf(green "%s" default, value_list[i]);
+		}
+		printf(green "\n\nRequisitos: %s \nExemplo: %s" default, requirements, example);
+
+		printf("\n\nDigite cancelar para interromper o cadastro.\n> Informe (%s) [tentativa %d]: ", info, c);
 		gets(answer);
 
 		if(strcmp(answer, cancel) == 0)
 		{
 			system("cls");
-			return NULL;
+			return "⤬";
 		}
-		else if((*validade_func)(answer)) 
+		
+		else if((*validate_func)(answer)) {
+			system("cls");
+			ptr = answer;
+			return ptr;
+		}
+		else
 		{
 			system("cls");
-			return answer;
+			printf(red "Algo deu errado. Verifique os requisitos e tente novamente." default);
+			printf(red "%s" default, global_error_message);
 		}
-		else 
-		{
-			system("cls");
-			if(c>0)printf(red "Algo deu errado. Verifique os requisitos e tente novamente.\n\n" default);
-		}
-		c++;
 	}
 	
 }
 
-int validade_matricula(char *numero_de_matricula)
+int validate_nome(char *numero_de_matricula)
 {
-	printf("\nvalidate - %s", numero_de_matricula);
-	return 0;
+	for(int i=0; i<strlen(numero_de_matricula); i++)
+	{
+		if(!isalpha(numero_de_matricula[i]) && !isspace(numero_de_matricula[i])) {
+			global_error_message = "\nUm ou mais caracteres nao sao letras.\n\n";
+			return 0;
+		}
+	}
+	
+	return 1;
+}
+
+int validate_RG(char *RG)
+{
+	for(int i=0; i<strlen(RG); i++)
+	{
+		if(!isdigit(RG[i])) {
+			global_error_message = "\nDeve conter apenas numeros.\n\n";
+			return 0;
+		}
+	}
+	
+	return 1;
+}
+
+int validate_CPF(char *CPF)
+{
+	if (strlen(CPF) != 11)
+	{
+			global_error_message = "\nDeve conter exatamente 11 numeros.\n\n";
+			return 0;
+	}
+	
+	for(int i=0; i<strlen(CPF); i++)
+	{
+		if(!isdigit(CPF[i])) {
+			global_error_message = "\nDeve conter apenas numeros.\n\n";
+			return 0;
+		}
+	}
+}
+
+int validate_telefone(char *telefone)
+{
+	if (strlen(telefone) != 9)
+	{
+			global_error_message = "\nDeve conter exatamente 9 numeros. Nao esqueca de incluir o nono digito.\n\n";
+			return 0;
+	}
+	
+	for(int i=0; i<strlen(telefone); i++)
+	{
+		if(!isdigit(telefone[i])) {
+			global_error_message = "\nDeve conter apenas numeros.\n\n";
+			return 0;
+		}
+	}
+}
+
+int validate_email(char *email)
+{
+	if (!strstr(email, "@") || !strstr(email, "."))
+	{
+			global_error_message = "\nE obrigatorio inserir @ e o provedor.\n\n";
+			return 0;
+	}
+	
 }
 
 void load_bd()
