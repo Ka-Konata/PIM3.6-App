@@ -29,13 +29,6 @@ int main(void)
 
 	// Defininfo variáveis
 	int run = 1, answer_menu, answer_cadastrar, answer_acessar;
-	// char cad_aluno_matricula[10], cad_aluno_nomecompleto[200], cad_aluno_rg[12], cad_aluno_cpf[14], cad_aluno_nomepai[200], cad_aluno_nomemae[200], cad_aluno_telefone[20], cad_aluno_email[200];
-	char to_validate[8][200],
-		dados_cadastro_aluno[8][200],
-		dados_cadastro_curso[4][200],
-		dados_cadastro_turma[4][200],
-		dados_cadastro_disciplina[5][200],
-		dados_cadastro_professor[8][200];
 
 	// Iniciando o programa
 	printf("\n\n            ____                  __      ___           _       \n           |  _ \\                 \\ \\    / (_)         | |      \n           | |_) | ___ _ __ ___    \\ \\  / / _ _ __   __| | ___  \n           |  _ < / _ \\ '_ ` _ \\    \\ \\/ / | | '_ \\ / _` |/ _ \\ \n           | |_) |  __/ | | | | |    \\  /  | | | | | (_| | (_) |\n           |____/ \\___|_| |_| |_|     \\/   |_|_| |_|\\__,_|\\___/");
@@ -90,70 +83,31 @@ int main(void)
 					char *key_list[8] = {"numero de matricula", "nome completo", "RG", "CPF", "nome do pai", "nome da mae", "telefone", "e-mail"};
 					char *value_list[8] = {'\0'};
 					char value[8][200] = {'\0'};
+					int cad_stop = 0;
 
-					ask_and_validate_info(key_list, value_list, 8, "LIMPA", "LIMPA", "LIMPA", "LIMPA", validate_nome, 1); // Impede um bug de repetição
+					ask_and_validate_info(key_list, value_list, 8, "", "", "", "", validate_nome, 1); // Impede um bug de repetição
 
-					// numero de matricula
 					strcpy(value[0], "A001");
-					strcpy(dados_cadastro_aluno[0], "A001");
 					value_list[0] = value[0];
 
-					char *infos[8] = {"", "nome completo", "RG", "CPF", "nome do pai", "nome da mae", "telefone", "e-mail"};
-					char *requirements[8] = {"", "somente letras, inclua espacos", "somente numeros, sem  simbolos ou espacos", "somente numeros, sem  simbolos ou espacos", "somente letras, inclua espacos", "somente letras, inclua espacos", "NAO COLOQUE O +55, somente numeros, sem  simbolos ou espacos, o nono digito (9) e obrigatorio", "@ e provedor obrigatorio"};
-					char *exemples[8] = {"", "pedro alberto", "1234567890", "02212533330", "pedro alberto", "pedro alberto", "911119999", "e-mail"};
-					int (*functionPtr[8])(char*) = {NULL, validate_nome, validate_num, validate_CPF, validate_nome, validate_nome, validate_telefone, validate_email};
+					char *infos[8] = {NULL, "nome completo", "RG", "CPF", "nome do pai", "nome da mae", "telefone", "e-mail"};
+					char *requirements[8] = {NULL, "somente letras, inclua espacos", "somente numeros, sem  simbolos ou espacos", "somente numeros, sem  simbolos ou espacos", "somente letras, inclua espacos", "somente letras, inclua espacos", "NAO COLOQUE O +55, somente numeros, sem  simbolos ou espacos, o nono digito (9) e obrigatorio", "obrigatorio incluir @ e provedor"};
+					char *exemples[8] = {NULL, "pedro alberto", "1234567890", "02212533330", "pedro alberto", "pedro alberto", "911119999", "exemplo@gmail.com"};
+					int (*validate_func[8])(char*) = {NULL, validate_nome, validate_num, validate_CPF, validate_nome, validate_nome, validate_telefone, validate_email};
 
-					for (int i_alunos = 1; i_alunos < 7; i_alunos++)
+					char number_sub[11] = "+55 ";
+					for (int i_alunos = 1; i_alunos < 8; i_alunos++)
 					{
-						if (i_alunos == 6) strcpy(value[i_alunos], "+55 ");
-						strcpy(value[i_alunos], ask_and_validate_info(key_list, value_list, 8, "ALUNO", infos[i_alunos], requirements[i_alunos], exemples[i_alunos], functionPtr[i_alunos], 0));
-						strcpy(dados_cadastro_aluno[i_alunos], value[i_alunos]);
+						strcpy(value[i_alunos], ask_and_validate_info(key_list, value_list, 8, "ALUNO", key_list[i_alunos], requirements[i_alunos], exemples[i_alunos], validate_func[i_alunos], 0));
+
+						if (i_alunos == 6) {
+							strcat(number_sub, value[6]);
+							strcpy(value[6], number_sub);
+						}
 						value_list[i_alunos] = value[i_alunos];
-						if (strcmp(value_list[i_alunos], "⤬") == 0) break;
-					}
-
-					// nome completo
-					//strcpy(value[1], ask_and_validate_info(key_list, value_list, 8, "ALUNO", "nome completo", "somente letras, inclua espacos", "pedro alberto", validate_nome, 0));
-					//strcpy(dados_cadastro_aluno[1], value[1]);
-					//value_list[1] = value[1];
-					//if (strcmp(value_list[1], "⤬") == 0) break;
-
-					// RG
-					//strcpy(value[2], ask_and_validate_info(key_list, value_list, 8, "ALUNO", "RG", "somente numeros, sem  simbolos ou espacos", "1234567890", validate_num, 0));
-					//strcpy(dados_cadastro_aluno[2], value[2]);
-					//value_list[2] = value[2];
-					//if (strcmp(value_list[2], "⤬") == 0) break;
-
-					// CPF
-					//strcpy(value[3], ask_and_validate_info(key_list, value_list, 8, "ALUNO", "CPF", "somente numeros, sem  simbolos ou espacos", "02212533330", validate_CPF, 0));
-					//strcpy(dados_cadastro_aluno[3], value[3]);
-					//value_list[3] = value[3];
-					//if (strcmp(value_list[3], "⤬") == 0) break;
-
-					// nome do pai
-					//strcpy(value[4], ask_and_validate_info(key_list, value_list, 8, "ALUNO", "nome do pai", "somente letras, inclua espacos", "pedro alberto", validate_nome, 0));
-					//strcpy(dados_cadastro_aluno[4], value[4]);
-					//value_list[4] = value[4];
-					//if (strcmp(value_list[4], "⤬") == 0) break;
-
-					// nome da mae
-					//strcpy(value[5], ask_and_validate_info(key_list, value_list, 8, "ALUNO", "nome da mae", "somente letras, inclua espacos", "pedro alberto", validate_nome, 0));
-					//strcpy(dados_cadastro_aluno[5], value[5]);
-					//value_list[5] = value[5];
-					//if (strcmp(value_list[5], "⤬") == 0) break;
-
-					// telefone
-					//strcpy(value[6], "+55 ");
-					//strcat(value[6], ask_and_validate_info(key_list, value_list, 8, "ALUNO", "telefone", "NAO COLOQUE O +55, somente numeros, sem  simbolos ou espacos, o nono digito (9) e obrigatorio", "911119999", validate_telefone, 0));
-					//strcpy(dados_cadastro_aluno[6], value[6]);
-					//value_list[6] = value[6];
-					//if (strcmp(value_list[6], "⤬") == 0) break;
-
-					// nome da mae
-					//strcpy(value[7], ask_and_validate_info(key_list, value_list, 8, "ALUNO", "e-mail", "@ e provedor obrigatorio", "exemplo123@gmail.com", validate_email, 0));
-					//strcpy(dados_cadastro_aluno[7], value[7]);
-					//value_list[7] = value[7];
-					//if (strcmp(value_list[7], "⤬") == 0) break;
+						if (strcmp(value_list[i_alunos], "⤬") == 0) {cad_stop = 1; break;}
+					} 
+					if (cad_stop == 1) break;
 
 					// FINAL: Inserindo no bd
 					insert_to_bd(1, 500, 8, value_list);
@@ -171,32 +125,25 @@ int main(void)
 					char *key_list[4] = {"codigo do curso", "nome do curso", "carga horaria total", "areas do conhecimento"};
 					char *value_list[4] = {'\0'};
 					char value[4][200] = {'\0'};
+					int cad_stop = 0;
 
-					ask_and_validate_info(key_list, value_list, 4, "LIMPA", "LIMPA", "LIMPA", "LIMPA", validate_nome, 1); // Impede um bug de repetição
+					ask_and_validate_info(key_list, value_list, 4, "", "", "", "", validate_nome, 1); // Impede um bug de repetição
 
-					// codigo do curso
 					strcpy(value[0], "C01");
-					strcpy(dados_cadastro_aluno[0], "C01");
 					value_list[0] = value[0];
 
-					// nome do curso
-					strcpy(value[1], ask_and_validate_info(key_list, value_list, 4, "CURSO", "nome do curso", "somente letras, inclua espacos", "Engenharia de Software", validate_nome, 0));
-					strcpy(dados_cadastro_aluno[1], value[1]);
-					value_list[1] = value[1];
-					if (strcmp(value_list[1], "⤬") == 0) break;
+					char *requirements[4] = {NULL, "somente letras, inclua espacos", "em horas, somente numeros, sem espacos ou simbolos", "Escreva exatamente como demonstrado abaixo. \nAreas de Conhecimento Disponiveis: \n\nCiencias Exatas e da Terra \nCiencias Biologicas \nEngenharias \nCiencias da Saude \nCiencias Agrarias \nLinguistica, Letras e Artes \nCiencias Sociais Aplicadas \nCiencias Humanas\n"};
+					char *exemples[4] = {NULL, "Engenharia de Software", "3000", ""};
+					int (*validate_func[4])(char*) = {NULL, validate_nome, validate_num, validate_choice};
 
-					// carga horaria total
-					strcpy(value[2], ask_and_validate_info(key_list, value_list, 4, "CURSO", "carga horaria total", "em horas, somente numeros, sem espacos ou simbolos", "3000", validate_num, 0));
-					strcpy(dados_cadastro_aluno[2], value[2]);
-					value_list[2] = value[2];
-					if (strcmp(value_list[2], "⤬") == 0) break;
-
-					// area do conhecimento
-					type_choices = 0;
-					strcpy(value[3], ask_and_validate_info(key_list, value_list, 4, "CURSO", "area do conhecimento", "Escreva exatamente como demonstrado abaixo. \nAreas de Conhecimento Disponiveis: \n\nCiencias Exatas e da Terra \nCiencias Biologicas \nEngenharias \nCiencias da Saude \nCiencias Agrarias \nLinguistica, Letras e Artes \nCiencias Sociais Aplicadas \nCiencias Humanas\n", "", validate_choice, 0));
-					strcpy(dados_cadastro_aluno[3], value[3]);
-					value_list[3] = value[3];
-					if (strcmp(value_list[3], "⤬") == 0) break;
+					for (int i_curso = 1; i_curso < 4; i_curso++)
+					{
+						if (i_curso == 3) type_choices = 0;
+						strcpy(value[i_curso], ask_and_validate_info(key_list, value_list, 4, "CURSO", key_list[i_curso], requirements[i_curso], exemples[i_curso], validate_func[i_curso], 0));
+						value_list[i_curso] = value[i_curso];
+						if (strcmp(value_list[i_curso], "⤬") == 0) {cad_stop = 1; break;}
+					} 
+					if (cad_stop == 1) break;
 
 					// FINAL: Inserindo no bd
 					insert_to_bd(2, 20, 4, value_list);
@@ -214,33 +161,25 @@ int main(void)
 					char *key_list[4] = {"codigo da turma", "nome da turma", "periodo", "limite maximo de alunos matriculados"};
 					char *value_list[4] = {'\0'};
 					char value[4][200] = {'\0'};
+					int cad_stop = 0;
 
-					ask_and_validate_info(key_list, value_list, 4, "LIMPA", "LIMPA", "LIMPA", "LIMPA", validate_nome, 1); // Impede um bug de repetição
+					ask_and_validate_info(key_list, value_list, 4, "", "", "", "", validate_nome, 1); // Impede um bug de repetição
 
-					// codigo da turma
 					strcpy(value[0], "T001");
-					strcpy(dados_cadastro_aluno[0], "T001");
 					value_list[0] = value[0];
 
-					// nome da turma
-					strcpy(value[1], ask_and_validate_info(key_list, value_list, 4, "TURMA", "nome da turma", "somente letras e numeros, sem simbolos ou espacos", "DS2P30", validate_turma, 0));
+					char *requirements[4] = {NULL, "somente letras e numeros, sem simbolos ou espacos", "Escreva exatamente como demonstrado abaixo. \nPeriodos Disponiveis: \n\nmanha \ntarde \nnoite\n", "Somente numeros"};
+					char *exemples[4] = {NULL, "DS2P30", "", "50"};
+					int (*validate_func[4])(char*) = {NULL, validate_turma, validate_choice, validate_num};
 
-					strcpy(dados_cadastro_aluno[1], value[1]);
-					value_list[1] = value[1];
-					if (strcmp(value_list[1], "⤬") == 0) break;
-
-					// periodo
-					type_choices = 1;
-					strcpy(value[2], ask_and_validate_info(key_list, value_list, 4, "TURMA", "periodo", "Escreva exatamente como demonstrado abaixo. \nPeriodos Disponiveis: \n\nmanha \ntarde \nnoite\n", "", validate_choice, 0));
-					strcpy(dados_cadastro_aluno[2], value[2]);
-					value_list[2] = value[2];
-					if (strcmp(value_list[2], "⤬") == 0) break;
-
-					// limite maximo de alunos matriculados
-					strcpy(value[3], ask_and_validate_info(key_list, value_list, 4, "TURMA", "limite maximo de alunos matriculados", "Somente numeros", "50", validate_num, 0));
-					strcpy(dados_cadastro_aluno[3], value[3]);
-					value_list[3] = value[3];
-					if (strcmp(value_list[3], "⤬") == 0) break;
+					for (int i_turma = 1; i_turma < 4; i_turma++)
+					{
+						if (i_turma == 2) type_choices = 1;
+						strcpy(value[i_turma], ask_and_validate_info(key_list, value_list, 4, "TURMA", key_list[i_turma], requirements[i_turma], exemples[i_turma], validate_func[i_turma], 0));
+						value_list[i_turma] = value[i_turma];
+						if (strcmp(value_list[i_turma], "⤬") == 0) {cad_stop = 1; break;}
+					} 
+					if (cad_stop == 1) break;
 
 					// FINAL: Inserindo no bd
 					insert_to_bd(3, 100, 4, value_list);
@@ -258,130 +197,72 @@ int main(void)
 					char *key_list[5] = {"codigo da disciplina", "nome da disciplina", "carga horaria semanal", "carga horaria total", "tipo"};
 					char *value_list[5] = {'\0'};
 					char value[5][200] = {'\0'};
+					int cad_stop = 0;
 
-					ask_and_validate_info(key_list, value_list, 5, "LIMPA", "LIMPA", "LIMPA", "LIMPA", validate_nome, 1); // Impede um bug de repetição
+					ask_and_validate_info(key_list, value_list, 5, "", "", "", "", validate_nome, 1); // Impede um bug de repetição
 
-					// codigo da disciplina
 					strcpy(value[0], "D001");
-					strcpy(dados_cadastro_aluno[0], "T001");
 					value_list[0] = value[0];
 
-					// nome da disciplina
-					strcpy(value[1], ask_and_validate_info(key_list, value_list, 5, "DISCIPLINA", "nome da disciplina", "somente letras, sem simbolos", "Matematica para Computacao", validate_nome, 0));
-					strcpy(dados_cadastro_aluno[1], value[1]);
-					value_list[1] = value[1];
-					if (strcmp(value_list[1], "⤬") == 0) break;
+					char *requirements[5] = {NULL, "somente letras, sem simbolos", "em horas, somente numeros, sem espacos ou simbolos", "Somente numeros", "Escreva exatamente como demonstrado abaixo. \nTipos Disponiveis: \n\npresencial \nead\n"};
+					char *exemples[5] = {NULL, "Matematica para Computacao", "6", "50", ""};
+					int (*validate_func[5])(char*) = {NULL, validate_nome, validate_num, validate_num, validate_choice};
 
-					// carga horaria semanal
-					strcpy(value[2], ask_and_validate_info(key_list, value_list, 5, "DISCIPLINA", "carga horaria semanal", "em horas, somente numeros, sem espacos ou simbolos", "6", validate_num, 0));
-					strcpy(dados_cadastro_aluno[2], value[2]);
-					value_list[2] = value[2];
-					if (strcmp(value_list[2], "⤬") == 0) break;
-
-					// carga horaria total
-					strcpy(value[3], ask_and_validate_info(key_list, value_list, 5, "DISCIPLINA", "carga horaria total", "Somente numeros", "50", validate_num, 0));
-					strcpy(dados_cadastro_aluno[3], value[3]);
-					value_list[3] = value[3];
-					if (strcmp(value_list[3], "⤬") == 0) break;
-
-					// tipo
-					type_choices = 2;
-					strcpy(value[4], ask_and_validate_info(key_list, value_list, 5, "DISCIPLINA", "tipo", "Escreva exatamente como demonstrado abaixo. \nTipos Disponiveis: \n\npresencial \nead\n", "", validate_choice, 0));
-					strcpy(dados_cadastro_aluno[4], value[4]);
-					value_list[4] = value[4];
-					if (strcmp(value_list[4], "⤬") == 0) break;
+					for (int i_disciplina = 1; i_disciplina < 5; i_disciplina++)
+					{
+						if (i_disciplina == 4) type_choices = 2;
+						strcpy(value[i_disciplina], ask_and_validate_info(key_list, value_list, 5, "DISCIPLINA", key_list[i_disciplina], requirements[i_disciplina], exemples[i_disciplina], validate_func[i_disciplina], 0));
+						value_list[i_disciplina] = value[i_disciplina];
+						if (strcmp(value_list[i_disciplina], "⤬") == 0) {cad_stop = 1; break;}
+					} 
+					if (cad_stop == 1) break;
 
 					// FINAL: Inserindo no bd
 					insert_to_bd(4, 300, 5, value_list);
 					save_bd();
 
-					printf(green "TURMA [%s|%s] cadastrada com sucesso!" default "\n\nPressione ENTER para continuar...", value_list[0], value_list[1]);
+					printf(green "DISCIPLINA [%s|%s] cadastrada com sucesso!" default "\n\nPressione ENTER para continuar...", value_list[0], value_list[1]);
 					getch();
 					system("cls");
 				}
 
-				/**
 				if (answer_cadastrar == 5)
 				{
 					system("cls");
 					char *key_list[8] = {"numero da funcional", "nome completo", "titularidade", "RG", "CPF", "CPTS", "telefone", "e-mail"};
 					char *value_list[8] = {'\0'};
 					char value[8][200] = {'\0'};
+					int cad_stop = 0;
 
-					ask_and_validate_info(key_list, value_list, 8, "LIMPA", "LIMPA", "LIMPA", "LIMPA", validate_nome, 1); // Impede um bug de repetição
+					ask_and_validate_info(key_list, value_list, 8, "", "", "", "", validate_nome, 1); // Impede um bug de repetição
 
-					// numero da funcional
-					strcpy(value[0], ask_and_validate_info(key_list, value_list, 8, "PROFESSOR", "numero da funcional", "somente numeros, sem  simbolos ou espacos", "12345678", validate_nome, 0));
-					strcpy(dados_cadastro_aluno[0], value[0]);
-					value_list[0] = value[0];
-					if (strcmp(value_list[0], "⤬") == 0) break;
+					char *requirements[8] = {"Somente numeros, sem simbolos ou espacos", "somente letras, inclua espacos", "Escreva exatamente como demonstrado abaixo. \nTipos Disponiveis: \n\especialista \nmestre \ndoutor\n", "somente numeros, sem  simbolos ou espacos", "somente numeros, sem  simbolos ou espacos", "Insira o Numero, Serie e UF da CTPS, separados por espacos", "NAO COLOQUE O +55, somente numeros, sem  simbolos ou espacos, o nono digito (9) e obrigatorio", "obrigatorio incluir @ e provedor"};
+					char *exemples[8] = {"###############", "pedro alberto", "", "1234567890", "02212533330", "1111111 1111 DF", "911119999", "exemplo@gmail.com"};
+					int (*validate_func[8])(char*) = {validate_num, validate_nome, validate_choice, validate_num, validate_CPF, validate_CTPS, validate_telefone, validate_email};
 
-					// nome completo
-					strcpy(value[1], ask_and_validate_info(key_list, value_list, 8, "ALUNO", "nome completo", "somente letras, inclua espacos", "pedro alberto", validate_nome, 0));
+					char number_sub[11] = "+55 ";
+					for (int i_professor = 0; i_professor < 8; i_professor++)
+					{
+						if (i_professor == 2) type_choices = 3;
+						strcpy(value[i_professor], ask_and_validate_info(key_list, value_list, 8, "PROFESSOR", key_list[i_professor], requirements[i_professor], exemples[i_professor], validate_func[i_professor], 0));
+						value_list[i_professor] = value[i_professor];
 
-					strcpy(dados_cadastro_aluno[1], value[1]);
-					value_list[1] = value[1];
-					if (strcmp(value_list[1], "⤬") == 0)
-						break;
-
-					// RG
-					strcpy(value[2], ask_and_validate_info(key_list, value_list, 8, "ALUNO", "RG", "somente numeros, sem  simbolos ou espacos", "1234567890", validate_num, 0));
-
-					strcpy(dados_cadastro_aluno[2], value[2]);
-					value_list[2] = value[2];
-					if (strcmp(value_list[2], "⤬") == 0)
-						break;
-
-					// CPF
-					strcpy(value[3], ask_and_validate_info(key_list, value_list, 8, "ALUNO", "CPF", "somente numeros, sem  simbolos ou espacos", "02212533330", validate_CPF, 0));
-
-					strcpy(dados_cadastro_aluno[3], value[3]);
-					value_list[3] = value[3];
-					if (strcmp(value_list[3], "⤬") == 0)
-						break;
-
-					// nome do pai
-					strcpy(value[4], ask_and_validate_info(key_list, value_list, 8, "ALUNO", "nome do pai", "somente letras, inclua espacos", "pedro alberto", validate_nome, 0));
-
-					strcpy(dados_cadastro_aluno[4], value[4]);
-					value_list[4] = value[4];
-					if (strcmp(value_list[4], "⤬") == 0)
-						break;
-
-					// nome da mae
-					strcpy(value[5], ask_and_validate_info(key_list, value_list, 8, "ALUNO", "nome da mae", "somente letras, inclua espacos", "pedro alberto", validate_nome, 0));
-
-					strcpy(dados_cadastro_aluno[5], value[5]);
-					value_list[5] = value[5];
-					if (strcmp(value_list[5], "⤬") == 0)
-						break;
-
-					// telefone
-					strcpy(value[6], "+55 ");
-					strcat(value[6], ask_and_validate_info(key_list, value_list, 8, "ALUNO", "telefone", "NAO COLOQUE O +55, somente numeros, sem  simbolos ou espacos, o nono digito (9) e obrigatorio", "911119999", validate_telefone, 0));
-
-					strcpy(dados_cadastro_aluno[6], value[6]);
-					value_list[6] = value[6];
-					if (strcmp(value_list[6], "⤬") == 0)
-						break;
-
-					// nome da mae
-					strcpy(value[7], ask_and_validate_info(key_list, value_list, 8, "ALUNO", "e-mail", "@ e provedor obrigatorio", "exemplo123@gmail.com", validate_email, 0));
-
-					strcpy(dados_cadastro_aluno[7], value[7]);
-					value_list[7] = value[7];
-					if (strcmp(value_list[7], "⤬") == 0)
-						break;
+						if (i_professor == 6) {
+							strcat(number_sub, value[6]);
+							strcpy(value[6], number_sub);
+						}
+						if (strcmp(value_list[i_professor], "⤬") == 0) {cad_stop = 1; break;}
+					} 
+					if (cad_stop == 1) break;
 
 					// FINAL: Inserindo no bd
-					insert_to_bd(1, 500, 8, value_list);
+					insert_to_bd(1, 50, 8, value_list);
 					save_bd();
 
-					printf(green "ALUNO [%s|%s] cadastrado com sucesso!" default "\n\nPressione ENTER para continuar...", value_list[0], value_list[1]);
+					printf(green "PROFESSOR [%s|%s] cadastrado com sucesso!" default "\n\nPressione ENTER para continuar...", value_list[0], value_list[1]);
 					getch();
 					system("cls");
 				}
-				**/
 
 				/**OUTROS*/
 

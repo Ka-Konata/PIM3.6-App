@@ -14,7 +14,7 @@
 #define default "\x1b[0m"
 
 int type_choices;
-char valid_choices[3][8][200] = {{"Ciencias Exatas e da Terra", "Ciencias Biologicas", "Engenharias", "Ciencias da Saude", "Ciencias Agrarias", "Linguistica Letras e Artes", "Ciencias Sociais Aplicadas", "Ciencias Humanas"}, {"manha", "tarde", "noite"}, {"presencial", "ead"}};
+char valid_choices[4][8][200] = {{"Ciencias Exatas e da Terra", "Ciencias Biologicas", "Engenharias", "Ciencias da Saude", "Ciencias Agrarias", "Linguistica Letras e Artes", "Ciencias Sociais Aplicadas", "Ciencias Humanas"}, {"manha", "tarde", "noite"}, {"presencial", "ead"}, {"especialista", "mestre", "doutor"}};
 
 // Para informar erros ao longo da execução
 char *global_error_message;
@@ -103,6 +103,62 @@ int validate_CPF(char *CPF)
 	
 	int validate_num(char *num);
 	if(validate_num(CPF) == 1) return 1; return 0;
+}
+/**
+1111111 1111 DF
+1234567 9012 45
+0123456 8901 34
+**/
+int validate_CTPS(char *CTPS)
+{
+	char *UFs[27] = {"RO", "AC", "AM", "RR", "PA", "AP", "TO", "MA", "PI", "CE", "RN", "PB", "PE", "AL", "SE", "BA", "MG", "ES", "RJ", "SP", "PR", "SC", "RS", "MS", "MT", "GO", "DF"}, UF[2];
+
+	if (strlen(CTPS) != 15)
+	{
+			global_error_message = "\nDeve conter exatamente 15 caracteres. Confira o exemplo.\n\n";
+			return 0;
+	}
+
+	for(int i = 0; i < 15; i++) 
+	{
+		//printf("   %d: %s", i, CTPS[i]); sleep(1);
+		if(i==7 || i==12)
+		{
+			if(!isspace(CTPS[i]))
+			{	
+				global_error_message = "\nSepare com espacos. Confira o exemplo.\n\n";
+				return 0;
+			}
+		}
+
+		else if(i<7)
+		{
+			if(!isdigit(CTPS[i]))
+			{
+				global_error_message = "\nO numero do CTPS deve conter apenas numeros. Confira o exemplo.\n\n";
+				return 0;
+			}
+		}
+
+		else if(i<12)
+		{
+			if(!isdigit(CTPS[i]))
+			{
+				global_error_message = "\nA serie do CTPS deve conter apenas numeros. Confira o exemplo.\n\n";
+				return 0;
+			}
+		}
+	}
+
+    strcpy(UF, CTPS + 13);
+	for(int i = 0; i < 27; i++) 
+	{
+		if(strcmp(UFs[i], UF) == 0) return 1;
+	}
+
+	printf("\n%s | %s  %d", UF, UFs[26], strcmp(UF, UFs[26])); sleep(1);
+	global_error_message = "\nUF nao identificada.\n\n";
+	return 0;
 }
 
 int validate_telefone(char *telefone)
