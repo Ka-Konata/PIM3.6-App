@@ -104,11 +104,7 @@ int validate_CPF(char *CPF)
 	int validate_num(char *num);
 	if(validate_num(CPF) == 1) return 1; return 0;
 }
-/**
-1111111 1111 DF
-1234567 9012 45
-0123456 8901 34
-**/
+
 int validate_CTPS(char *CTPS)
 {
 	char *UFs[27] = {"RO", "AC", "AM", "RR", "PA", "AP", "TO", "MA", "PI", "CE", "RN", "PB", "PE", "AL", "SE", "BA", "MG", "ES", "RJ", "SP", "PR", "SC", "RS", "MS", "MT", "GO", "DF"}, UF[2];
@@ -203,6 +199,19 @@ int validate_turma(char *nome)
 	{
 		if(!isalpha(nome[i]) && !isdigit(nome[i])) {
 			global_error_message = "\nUm ou mais caracteres nao sao letras ou numeros.\n\n";
+			return 0;
+		}
+	}
+	
+	return 1;
+}
+
+int validate_codigo(char *codigo)
+{
+	for(int i=0; i<strlen(codigo); i++)
+	{
+		if(isspace(codigo[i])) {
+			global_error_message = "\nNao pode conter espacos.\n\n";
 			return 0;
 		}
 	}

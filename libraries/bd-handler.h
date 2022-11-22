@@ -122,7 +122,6 @@ void insert_to_bd(int c_bd, int M, int N, char **table) {
 			bd_ptr = bd_professores_arr;
 			break;
 	}
-
 	for (i = 0; i < M; i++)
 	{
 		for (j = 0; j < N; j++)
@@ -139,9 +138,7 @@ void insert_to_bd(int c_bd, int M, int N, char **table) {
 				return 0;
 			}
 		}
-		
 	}
-	
 }
 
 char construct_bd_string(char *which_bd, char *file_path, int table_range, const int VALUE_RANGE)
