@@ -54,6 +54,8 @@ dkms.conf
 # ADICIONAIS
 build
 testes
+bd
+_bd
 .dist
 .vs/
 .txt
