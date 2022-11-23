@@ -101,8 +101,86 @@ void check_bd()
 	}
 }
 
+char* get_table(int c_bd, int M, int N, char *_key, char *key_list[8])
+{
+	char result[2048] = "", *ptr, key[200] = "\"";
+	char (*bd_ptr)[N][200];
+
+	strcat(key, _key);
+	strcat(key, "\"");
+
+	switch (c_bd)
+	{
+		case 1:
+			bd_ptr = bd_alunos_arr;
+			break;
+		case 2:
+			bd_ptr = bd_cursos_arr;
+			break;
+		case 3:
+			bd_ptr = bd_turmas_arr;
+			break;
+		case 4:
+			bd_ptr = bd_disciplinas_arr;
+			break;
+		case 5:
+			bd_ptr = bd_professores_arr;
+			break;
+	}
+
+	for (int i = 0; i < M; i++)
+	{
+		if(strcmp(bd_ptr[i][0], key) == 0) {
+			for (int j = 0; j < N; j++)
+			{
+				strcat(result, "\n");
+				strcat(result, key_list[j]);
+				strcat(result, ": " green);
+				strcat(result, bd_ptr[i][j]);
+				strcat(result, default);
+			}
+
+			ptr = result;
+			return ptr;
+		}
+	}
+	return "⤬";
+}
+
+int get_table_position(int c_bd, int M, int N, char *_key)
+{
+	char key[200] = "\"", (*bd_ptr)[N][200];
+	strcat(key, _key);
+	strcat(key, "\"");
+	switch (c_bd)
+	{
+		case 1:
+			bd_ptr = bd_alunos_arr;
+			break;
+		case 2:
+			bd_ptr = bd_cursos_arr;
+			break;
+		case 3:
+			bd_ptr = bd_turmas_arr;
+			break;
+		case 4:
+			bd_ptr = bd_disciplinas_arr;
+			break;
+		case 5:
+			bd_ptr = bd_professores_arr;
+			break;
+	}
+
+	for (int i = 0; i < M; i++)
+	{
+		if(strcmp(bd_ptr[i][0], key) == 0) {
+			return i;
+		}
+	}
+}
+
 void insert_to_bd(int c_bd, int M, int N, char **table) { 
-	int i, j, k, lpos_A, lpos_B;
+	int lpos_A, lpos_B;
 	char (*bd_ptr)[N][200];
 	switch (c_bd)
 	{
@@ -122,12 +200,12 @@ void insert_to_bd(int c_bd, int M, int N, char **table) {
 			bd_ptr = bd_professores_arr;
 			break;
 	}
-	for (i = 0; i < M; i++)
+	for (int i = 0; i < M; i++)
 	{
-		for (j = 0; j < N; j++)
+		for (int j = 0; j < N; j++)
 		{
 			if(strcmp(bd_ptr[i][j], "") == 0) {
-				for (k = 0; k < N; k++)
+				for (int k = 0; k < N; k++)
 				{
 					char info[200] = "\0";
 					strcat(info, "\"");
@@ -135,10 +213,39 @@ void insert_to_bd(int c_bd, int M, int N, char **table) {
 					strcat(info, "\"");
 					strcpy(bd_ptr[i][k], info);
 				}
+				save_bd();
 				return 0;
 			}
 		}
 	}
+}
+
+void delete_element(int c_bd, int M, int N, int element_pos)
+{
+	char (*bd_ptr)[N][200];
+	switch (c_bd)
+	{
+		case 1:
+			bd_ptr = bd_alunos_arr;
+			break;
+		case 2:
+			bd_ptr = bd_cursos_arr;
+			break;
+		case 3:
+			bd_ptr = bd_turmas_arr;
+			break;
+		case 4:
+			bd_ptr = bd_disciplinas_arr;
+			break;
+		case 5:
+			bd_ptr = bd_professores_arr;
+			break;
+	}
+
+	for(int i = element_pos; i < M; i++)
+		for(int j = 0; j < N; j++)
+        	strcpy(bd_ptr[i][j], bd_ptr[i+1][j]);
+	save_bd();
 }
 
 char construct_bd_string(char *which_bd, char *file_path, int table_range, const int VALUE_RANGE)

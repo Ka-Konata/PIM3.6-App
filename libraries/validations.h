@@ -1,10 +1,4 @@
 // Inserindo bibliotecas
-#include <stdio.h>
-#include <stdlib.h>
-#include <locale.h>
-#include <string.h>
-#include <conio.h>
-#include <ctype.h>
 
 // Definindo constantes
 // Cores
@@ -152,7 +146,7 @@ int validate_CTPS(char *CTPS)
 		if(strcmp(UFs[i], UF) == 0) return 1;
 	}
 
-	printf("\n%s | %s  %d", UF, UFs[26], strcmp(UF, UFs[26])); sleep(1);
+	//printf("\n%s | %s  %d", UF, UFs[26], strcmp(UF, UFs[26])); sleep(1);
 	global_error_message = "\nUF nao identificada.\n\n";
 	return 0;
 }
@@ -217,4 +211,16 @@ int validate_codigo(char *codigo)
 	}
 	
 	return 1;
+}
+
+int validate_funcional(char *funcional)
+{
+	if (strlen(funcional) != 6)
+	{
+			global_error_message = "\nDeve conter exatamente 6 numeros.\n\n";
+			return 0;
+	}
+	
+	int validate_num(char *num);
+	if(validate_num(funcional) == 1) return 1; return 0;
 }

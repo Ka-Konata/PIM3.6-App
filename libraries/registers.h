@@ -1,15 +1,9 @@
 // Inserindo bibliotecas
-#include <stdio.h>
-#include <stdlib.h>
-#include <locale.h>
-#include <string.h>
-#include <conio.h>
-#include <ctype.h>
 
 #include "bd-handler.h"
 #include "validations.h"
 
-int register_aluno(int type, int range, char *key_list[8], char *requirements[8], char *exemples[8], int (*validate_func[8])(char*), char *title, int M, int N) 
+int register_loop(int type, int range, char *key_list[8], char *requirements[8], char *exemples[8], int (*validate_func[8])(char*), char *title, int M, int N) 
 {
     system("cls");
     char *value_list[8] = {'\0'};
@@ -46,4 +40,54 @@ int register_aluno(int type, int range, char *key_list[8], char *requirements[8]
     getch();
     system("cls");
     return 0;
+}
+
+int search_loop(int type, char *title, char *how, char* exemple, char *key_list[8], int M, int N, int skip)
+{
+    int flag = 0, found = 0;
+
+    system("cls");
+    while (flag == 0)
+    {
+        char answer[200], cancel[200] = "cancelar", *table_res;
+        printf("==================== Procurando por: %s ====================", title);
+        printf(green "\n\nComo funciona: %s \nExemplo: %s" default, how, exemple);
+        printf("\n\nDigite cancelar para interromper a pesquisa\n> Pesquisar: ");
+        gets(answer);
+        if(skip == 1) return 0;
+        if(strcmp(answer, cancel) == 0)
+        {
+            system("cls");
+            return 0;
+        }
+        if(found == 0)  
+        {
+            system("cls");
+            table_res = get_table(type, M, N, answer, key_list);
+            if(strcmp(table_res, "⤬") == 0) {                
+               printf(red "Nao encontrado(a)\n\n" default);
+            }
+            else {
+                found = 1;
+                printf("=================================== Resultado da Pesquisa ===================================");
+                printf("\n%s", table_res);
+                printf("\n\n\nDigite 1 para ALTERAR O CADASTRO. \nDigite 2 para DELETAR O CADASTRO. \nDigite qualquer outra coisa para continuar pesquisando.");
+                printf("\n> ");
+                if (!scanf("%d", &flag))
+                    scanf("%*[^\n]");
+                if(flag == 1) return 1;
+                else if(flag == 2) {
+                    delete_element(type, M, N, get_table_position(type, M, N, answer));
+                    printf(green "\nCadastro deletado com sucesso!" default "\nPressione ENTER para voltar...");
+                    getch();
+                    return 0;
+                }
+                system("cls");
+            }
+        }
+        else {
+            found = 0;
+            system("cls");
+        }
+    }
 }
