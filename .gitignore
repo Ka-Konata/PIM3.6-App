@@ -55,7 +55,7 @@ dkms.conf
 build
 testes
 bd
-_bd
+.vscode
 .dist
 .vs/
 .txt
