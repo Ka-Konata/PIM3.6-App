@@ -1,3 +1,4 @@
+// Arquivo validations.h
 // Inserindo bibliotecas
 
 // Definindo constantes
@@ -7,54 +8,55 @@
 #define blue "\x1b[34m"
 #define default "\x1b[0m"
 
-int type_choices;
-char valid_choices[4][8][200] = {{"Ciencias Exatas e da Terra", "Ciencias Biologicas", "Engenharias", "Ciencias da Saude", "Ciencias Agrarias", "Linguistica Letras e Artes", "Ciencias Sociais Aplicadas", "Ciencias Humanas"}, {"manha", "tarde", "noite"}, {"presencial", "ead"}, {"especialista", "mestre", "doutor"}};
+int type_choices; // Auxilia na função validate_choice()
+char valid_choices[4][8][200] = {{"Ciencias Exatas e da Terra", "Ciencias Biologicas", "Engenharias", "Ciencias da Saude", "Ciencias Agrarias", "Linguistica Letras e Artes", "Ciencias Sociais Aplicadas", "Ciencias Humanas"}, {"manha", "tarde", "noite"}, {"presencial", "ead"}, {"especialista", "mestre", "doutor"}}; // Opções válidas de escolha para a função validate_choice()
+char *global_error_message; // Para informar erros ao longo da execução
 
-// Para informar erros ao longo da execução
-char *global_error_message;
-
-char* ask_and_validate_info(char **key_list, char **value_list, int n, char *title, char *info, char *requirements, char *example, int (*validate_func)(char *), int skip) 
+char* ask_and_validate_info(char **key_list, char **value_list, int n, char *title, char *info, char *requirements, char *example, int (*validate_func)(char *), int skip, int alt_pos, char *to_change) 
 {
-	int run = 1;
-	char answer[200], cancel[200] = "cancelar", *ptr;
+	/* Pede para o usuário inserir alguma informação, e à valida logo em seguida */
+
+	int run = 1; // Flag
+	char answer[200], // Para armazenar a resposta do usuário
+	cancel[200] = "cancelar", // Para identificar um cancelamento
+	*ptr; // Para retorno
 	
-	while (run = 1)
+	while (run = 1) // Inicia o laço para entrada de dados
 	{
-		printf("==================== CADASTRANDO %s ====================\n", title);
-		for (int i = 0; i < n; i++)
+		printf("==================== CADASTRANDO %s ====================\n", title); // Imprime o título
+		if(alt_pos > 0) printf(green "\n(ALTERANDO CADASTRO) - Antigas Informacoes:" default "%s\n", to_change); // Para impressão caso esteja no modo de alteração de cadastro
+		
+		for (int i = 0; i < n; i++) // Laço para imprimir os dados já informados
 		{
-			printf("\n%s: ", key_list[i]);
-			if(value_list[i] != NULL)  printf(green "%s" default, value_list[i]);
+			printf("\n%s: ", key_list[i]); // imprime o tipo de dado
+			if(value_list[i] != NULL)  printf(green "%s" default, value_list[i]); // imprime os dados já informados
 		}
-		printf(green "\n\nRequisitos: %s \nExemplo: %s" default, requirements, example);
+		printf(green "\n\nRequisitos: %s \nExemplo: %s" default, requirements, example); // imprime os requisitos e o exemplo
 		printf("\n\n%.*s\n", 54+strlen(title), "===================================================================");
+		printf("\n\nDigite cancelar para interromper o cadastro.\n> Informe (%s): ", info); // Pede para o usuário informar os dados
+		gets(answer); // Entrada de dados
 
-		printf("\n\nDigite cancelar para interromper o cadastro.\n> Informe (%s): ", info);
-		gets(answer);
-
-		if(skip == 0  && strlen(answer) == 0)
+		if(skip == 0  && strlen(answer) == 0) // Caso nada seja informado
 		{
-			system("cls");
-			printf(red "Campo obrigatorio.\n\n" default);
+			system("cls"); // Limpa a tela
+			printf(red "Campo obrigatorio.\n\n" default); // Informa erro
 		}
-
-		else {
-			if(strcmp(answer, cancel) == 0)
+		else { // Caso contrário
+			if(strcmp(answer, cancel) == 0) // Caso o usuário cancele 
 			{
-				system("cls");
-				return "⤬";
+				system("cls"); // Limpa a tela
+				return "⤬"; // Encerra a função e informa o cancelamento
 			}
-			
-			else if((*validate_func)(answer)) {
-				system("cls");
-				ptr = answer;
-				return ptr;
+			else if((*validate_func)(answer)) { // Caso o dado informado passe na validação
+				system("cls"); // Limpa a tela
+				ptr = answer; // Prepara o retorno
+				return ptr; // Encerra a função e retorna o dado informados
 			}
-			else
+			else // Caso outro não passe na validação
 			{
-				system("cls");
-				printf(red "Algo deu errado. Verifique os requisitos e tente novamente." default);
-				printf(red "%s" default, global_error_message);
+				system("cls"); // Limpa a tela
+				printf(red "Algo deu errado. Verifique os requisitos e tente novamente." default); // Informa que há um erro
+				printf(red "%s" default, global_error_message); // Imprime a mensagem global de erro 
 			}
 		}
 	}
@@ -63,164 +65,172 @@ char* ask_and_validate_info(char **key_list, char **value_list, int n, char *tit
 
 int validate_nome(char *nome)
 {
-	for(int i=0; i<strlen(nome); i++)
+	/* Para validação de Nomes */
+
+	for(int i=0; i<strlen(nome); i++) // Laço para verificar cada caractere
 	{
-		if(!isalpha(nome[i]) && !isspace(nome[i])) {
-			global_error_message = "\nUm ou mais caracteres nao sao letras.\n\n";
-			return 0;
+		if(!isalpha(nome[i]) && !isspace(nome[i])) { // Caso o caractere não seja um nem do alfabeto e nem uma string
+			global_error_message = "\nUm ou mais caracteres nao sao letras.\n\n"; // Altera a mensagem global de erro
+			return 0; // Encerra a função informando a falha
 		}
 	}
-	
-	return 1;
+	return 1; // Encerra a função informando sucesso
 }
 
 int validate_num(char *num)
 {
-	for(int i=0; i<strlen(num); i++)
+	/* Para validação de números */
+
+	for(int i=0; i<strlen(num); i++) // Laço para verificar cada caractere
 	{
-		if(!isdigit(num[i])) {
-			global_error_message = "\nDeve conter apenas numeros.\n\n";
-			return 0;
+		if(!isdigit(num[i])) { // Caso o caractere não seja um número
+			global_error_message = "\nDeve conter apenas numeros.\n\n"; // Altera a mensagem global de erro
+			return 0; // Encerra a função informando a falha
 		}
 	}
-	
-	return 1;
+	return 1; // Encerra a função informando sucesso
 }
 
 int validate_CPF(char *CPF)
 {
-	if (strlen(CPF) != 11)
+	/* Para validação de CPF */
+
+	if (strlen(CPF) != 11) // Caso não tenha 11 caracteres
 	{
-			global_error_message = "\nDeve conter exatamente 11 numeros.\n\n";
-			return 0;
+			global_error_message = "\nDeve conter exatamente 11 numeros.\n\n"; // Altera a mensagem global de erro
+			return 0; // Encerra a função informando a falha
 	}
-	
-	int validate_num(char *num);
-	if(validate_num(CPF) == 1) return 1; return 0;
+	int validate_num(char *num); // Define função
+	if(validate_num(CPF) == 1) return 1; return 0; // Incrementa também a validação de números
 }
 
 int validate_CTPS(char *CTPS)
 {
-	char *UFs[27] = {"RO", "AC", "AM", "RR", "PA", "AP", "TO", "MA", "PI", "CE", "RN", "PB", "PE", "AL", "SE", "BA", "MG", "ES", "RJ", "SP", "PR", "SC", "RS", "MS", "MT", "GO", "DF"}, UF[2];
+	/* Para validação de CTPS */
 
-	if (strlen(CTPS) != 15)
+	char *UFs[27] = {"RO", "AC", "AM", "RR", "PA", "AP", "TO", "MA", "PI", "CE", "RN", "PB", "PE", "AL", "SE", "BA", "MG", "ES", "RJ", "SP", "PR", "SC", "RS", "MS", "MT", "GO", "DF"}, UF[2]; // Para validar UF
+
+	if (strlen(CTPS) != 15) // Caso tenha não tenha 15 caracteres
 	{
-			global_error_message = "\nDeve conter exatamente 15 caracteres. Confira o exemplo.\n\n";
-			return 0;
+			global_error_message = "\nDeve conter exatamente 15 caracteres. Confira o exemplo.\n\n"; // Altera a mensagem global de erro
+			return 0; // Encerra a função informando a falha
 	}
-
-	for(int i = 0; i < 15; i++) 
+	for(int i = 0; i < 15; i++) // Laço para validar cada caractere
 	{
-		//printf("   %d: %s", i, CTPS[i]); sleep(1);
-		if(i==7 || i==12)
+		if(i==7 || i==12) // Caso seja o caractere 7 ou o 12
 		{
-			if(!isspace(CTPS[i]))
+			if(!isspace(CTPS[i])) // Caso não seja um espaço
 			{	
-				global_error_message = "\nSepare com espacos. Confira o exemplo.\n\n";
-				return 0;
+				global_error_message = "\nSepare com espacos. Confira o exemplo.\n\n"; // Altera a mensagem global de erro
+				return 0; // Encerra a função informando a falha
 			}
 		}
-
-		else if(i<7)
+		else if(i<7) // Caso seja antes do 7
 		{
-			if(!isdigit(CTPS[i]))
+			if(!isdigit(CTPS[i])) // Caso não seja um número
 			{
-				global_error_message = "\nO numero do CTPS deve conter apenas numeros. Confira o exemplo.\n\n";
-				return 0;
+				global_error_message = "\nO numero do CTPS deve conter apenas numeros. Confira o exemplo.\n\n"; // Altera a mensagem global de erro
+				return 0; // Encerra a função informando a falha
 			}
 		}
-
-		else if(i<12)
+		else if(i<12)// Caso seja antes do 12 e depos do 7
 		{
-			if(!isdigit(CTPS[i]))
+			if(!isdigit(CTPS[i])) // Caso não seja um número
 			{
-				global_error_message = "\nA serie do CTPS deve conter apenas numeros. Confira o exemplo.\n\n";
-				return 0;
+				global_error_message = "\nA serie do CTPS deve conter apenas numeros. Confira o exemplo.\n\n"; // Altera a mensagem global de erro
+				return 0; // Encerra a função informando a falha
 			}
 		}
 	}
 
-    strcpy(UF, CTPS + 13);
-	for(int i = 0; i < 27; i++) 
+    strcpy(UF, CTPS + 13); // Pega a UF
+	for(int i = 0; i < 27; i++)  // Laço para verificar se a UF informada existe
 	{
-		if(strcmp(UFs[i], UF) == 0) return 1;
+		if(strcmp(UFs[i], UF) == 0) return 1; // Encerra a função retornando sucesso, caso a UF exista
 	}
-
-	//printf("\n%s | %s  %d", UF, UFs[26], strcmp(UF, UFs[26])); sleep(1);
-	global_error_message = "\nUF nao identificada.\n\n";
-	return 0;
+	// Caso não exista
+	global_error_message = "\nUF nao identificada.\n\n"; // Altera a mensagem global de erro
+	return 0; // Encerra a função informando a falha
 }
 
 int validate_telefone(char *telefone)
 {
-	if (strlen(telefone) != 9)
+	/* Para validação de número de telefone */
+
+	if (strlen(telefone) != 9) // Caso não tenha 9 caracteres
 	{
-			global_error_message = "\nDeve conter exatamente 9 numeros. Nao esqueca de incluir o nono digito.\n\n";
-			return 0;
+			global_error_message = "\nDeve conter exatamente 9 numeros. Nao esqueca de incluir o nono digito.\n\n"; // Altera a mensagem global de erro
+			return 0; // Encerra a função informando a falha
 	}
-	
-	int validate_num(char *num);
-	if(validate_num(telefone) == 1) return 1; return 0;
+	int validate_num(char *num); // Define a função
+	if(validate_num(telefone) == 1) return 1; return 0; // Incrementa a validação de número
 }
 
 int validate_email(char *email)
 {
-	if (!strstr(email, "@") || !strstr(email, "."))
+	/* Para validação de e-mail */
+
+	if (!strstr(email, "@") || !strstr(email, ".")) // Caso não tenha um @ ou um .
 	{
-			global_error_message = "\nE obrigatorio inserir @ e o provedor.\n\n";
-			return 0;
+			global_error_message = "\nE obrigatorio inserir @ e o provedor.\n\n"; // Altera a mensagem global de erro
+			return 0; // Encerra a função informando a falha
 	}
+	return 1; // Encerra a função informando sucesso
 }
 
 int validate_choice(char *choice)
 {
-	int validate_nome(char *choice);
+	/* Para validar escolha */
 
-	if (validate_nome(choice) == 1)
+	int validate_nome(char *choice); // Define a função
+	if (validate_nome(choice) == 1) // Caso sejam apenas letras
 	{
-		for(int i = 0; i < 8; i++) {
-			if(strcmp(choice, valid_choices[type_choices][i]) == 0) return 1;
+		for(int i = 0; i < 8; i++) { // Laço para verificar se a escolha é válida
+			if(strcmp(choice, valid_choices[type_choices][i]) == 0) return 1;  // Encerra a função informando sucesso, caso seja válida
 		}
-		global_error_message = "\nEscolha nao identificada.\n\n";
-		return 0;
+		global_error_message = "\nEscolha nao identificada.\n\n"; // Altera a mensagem global de erro
+		return 0; // Encerra a função informando a falha
 	}
-	return 0;
+	return 0; // Encerra a função informando a falha
 }
 
-int validate_turma(char *nome)
+int validate_turma(char *turma)
 {
-	for(int i=0; i<strlen(nome); i++)
+	/* Para validação de nome da turma */
+
+	for(int i=0; i<strlen(turma); i++) // Laço para validar cada caractere
 	{
-		if(!isalpha(nome[i]) && !isdigit(nome[i])) {
-			global_error_message = "\nUm ou mais caracteres nao sao letras ou numeros.\n\n";
-			return 0;
+		if(!isalpha(turma[i]) && !isdigit(turma[i])) { // Caso não seja nem do alfabeto e nem um número
+			global_error_message = "\nUm ou mais caracteres nao sao letras ou numeros.\n\n"; // Altera a mensagem global de erro
+			return 0; // Encerra a função informando a falha
 		}
 	}
-	
-	return 1;
+	return 1; // Encerra a função informando sucesso
 }
 
 int validate_codigo(char *codigo)
 {
-	for(int i=0; i<strlen(codigo); i++)
+	/* Para validação de nome da turma */
+	
+	for(int i=0; i<strlen(codigo); i++) // Laço para validar cada caractere
 	{
-		if(isspace(codigo[i])) {
-			global_error_message = "\nNao pode conter espacos.\n\n";
-			return 0;
+		if(isspace(codigo[i])) { // Caso seja um espaço
+			global_error_message = "\nNao pode conter espacos.\n\n"; // Altera a mensagem global de erro
+			return 0; // Encerra a função informando a falha
 		}
 	}
-	
-	return 1;
+	return 1; // Encerra a função informando a sucesso
 }
 
 int validate_funcional(char *funcional)
 {
-	if (strlen(funcional) != 6)
-	{
-			global_error_message = "\nDeve conter exatamente 6 numeros.\n\n";
-			return 0;
-	}
+	/* Para validação de nome da turma */
 	
-	int validate_num(char *num);
-	if(validate_num(funcional) == 1) return 1; return 0;
+	if (strlen(funcional) != 6) // Caso não tenha 6 caracteres
+	{
+			global_error_message = "\nDeve conter exatamente 6 numeros.\n\n"; // Altera a mensagem global de erro
+			return 0; // Encerra a função informando a falha
+	}
+	int validate_num(char *num); // Define a função
+	if(validate_num(funcional) == 1) return 1; return 0; // Verifica se tem apenas números
 }

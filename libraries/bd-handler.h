@@ -1,3 +1,4 @@
+// Arquivo bd-handler.h
 // Inserindo bibliotecas
 #include <stdio.h>
 #include <stdlib.h>
@@ -18,7 +19,7 @@
 #define BD_TURMAS_PATH "bd/bd_turmas.json"
 #define BD_DISCIPLINAS_PATH "bd/bd_disciplinas.json"
 #define BD_PROFESSORES_PATH "bd/bd_professores.json"
-#define BD_SIZE 1024
+#define BD_SIZE 800000
 
 // Para armazenar os arquivos em strings
 char bd_alunos[BD_SIZE] = {0};
@@ -32,9 +33,12 @@ char bd_cursos_arr[20][4][200];
 char bd_turmas_arr[100][4][200];
 char bd_disciplinas_arr[300][5][200];
 char bd_professores_arr[50][8][200];
+char table_to_change[2048];
 
 void load_bd()
 {
+	/* Carrega o bd. Abre os arquivos .json e armazena suas informações em matrizes */
+
 	// Definindo funções
 	char get_bd_as_a_vector(char *bd, char *which_bd, const int TABLE_RANGE);
 
@@ -69,51 +73,59 @@ void load_bd()
 
 void save_bd()
 {
+	/* Executa os comandos para salvar todas as matrizes em seus respectivos arquivos .json */
+
 	// Definindo funções
 	char construct_bd_string(char *which_bd, char *file_path, int table_range, const int VALUE_RANGE);
 
-	construct_bd_string("alunos", BD_ALUNOS_PATH, 500, 8);
-	construct_bd_string("cursos", BD_CURSOS_PATH, 20, 4);
-	construct_bd_string("turmas", BD_TURMAS_PATH, 100, 4);
-	construct_bd_string("disciplinas", BD_DISCIPLINAS_PATH, 300, 5);
-	construct_bd_string("professores", BD_PROFESSORES_PATH, 50, 8);
+	construct_bd_string("alunos", BD_ALUNOS_PATH, 500, 8); // Para salvar a matriz de alunos
+	construct_bd_string("cursos", BD_CURSOS_PATH, 20, 4); // Para salvar a matriz de cursos
+	construct_bd_string("turmas", BD_TURMAS_PATH, 100, 4); // Para salvar a matriz de turmas
+	construct_bd_string("disciplinas", BD_DISCIPLINAS_PATH, 300, 5); // Para salvar a matriz de disciplinas
+	construct_bd_string("professores", BD_PROFESSORES_PATH, 50, 8); // Para salvar a matriz professores
 }
 
 void check_bd()
 {
-	char paths[5][25] = {"bd/bd_alunos.json", "bd/bd_cursos.json", "bd/bd_turmas.json", "bd/bd_disciplinas.json", "bd/bd_professores.json"};
-	// Para criar os arquivos caso necessário
-	char reset_bd[5][150] = {"{\"0\":[\"numero de matricula\",\"nome completo\",\"RG\",\"CPF\",\"nome do pai\",\"nome da mae\",\"telefone\",\"e-mail\"]}", "{\"0\":[\"codigo do curso\",\"nome do curso\",\"carga horaria total\",\"areas do conhecimento\"]}", "{\"0\":[\"codigo da turma\",\"nome da turma\",\"periodo\",\"limite maximo de alunos matriculados\"]}", "{\"0\":[\"codigo da disciplina\",\"nome da disciplina\",\"carga horaria semanal\",\"carga horaria total\",\"tipo\"]}", "{\"0\":[\"numero da funcional\",\"nome completo\",\"titularidade\",\"RG\",\"CPF\",\"CPTS\",\"telefone\",\"e-mail\"]}"};
+	/* Verifica se os arquivos .json existem, e caso não existam, os criam */
 
-	for (int i = 0; i < 5; i++)
+	// Definindo variáveis
+	char paths[5][25] = {"bd/bd_alunos.json", "bd/bd_cursos.json", "bd/bd_turmas.json", "bd/bd_disciplinas.json", "bd/bd_professores.json"}; // Path dos arquivos 
+	char reset_bd[5][150] = {"{\"0\":[\"numero de matricula\",\"nome completo\",\"RG\",\"CPF\",\"nome do pai\",\"nome da mae\",\"telefone\",\"e-mail\"]}", "{\"0\":[\"codigo do curso\",\"nome do curso\",\"carga horaria total\",\"areas do conhecimento\"]}", "{\"0\":[\"codigo da turma\",\"nome da turma\",\"periodo\",\"limite maximo de alunos matriculados\"]}", "{\"0\":[\"codigo da disciplina\",\"nome da disciplina\",\"carga horaria semanal\",\"carga horaria total\",\"tipo\"]}", "{\"0\":[\"numero da funcional\",\"nome completo\",\"titularidade\",\"RG\",\"CPF\",\"CPTS\",\"telefone\",\"e-mail\"]}"}; // Para criar os arquivos sem dar erro na sua leitura com a função get_bd_as_a_vector()
+
+	printf("\n"); // Quebra uma linha
+	for (int i = 0; i < 5; i++) // Inicia o laço de repetição para verificar todos os arquivos
 	{
-		FILE *actual_file = fopen(paths[i], "r");
-		if (!actual_file)
+		FILE *actual_file = fopen(paths[i], "r"); // Abre um arquivo
+		if (!actual_file) // Verifica se o arquivo existe
 		{
-    		mkdir("bd", 0700);
-			FILE *f = fopen(paths[i], "w+");
-
-			fputs(reset_bd[i], f);
-			fclose(f);
-			printf(red "Arquivo [%s] nao encontrado... Criado com sucesso\n" default, paths[i]);
-			sleep(1);
+    		mkdir("bd", 0700); // Cria a pasta "bd" caso não exista
+			FILE *f = fopen(paths[i], "w+"); // Cria um arquivo no modo escrita
+			fputs(reset_bd[i], f); // Salva o novo arquivo criado com  
+			fclose(f); // Fecha o arquivo
+			printf(red "\n           Arquivo [%s] nao encontrado... Criado com sucesso" default, paths[i]); // Informa que um não encontrado foi criado
 		}
 	}
 }
 
 char* get_table(int c_bd, int M, int N, char *_key, char *key_list[8])
 {
-	char result[2048] = "", *ptr, key[200] = "\"";
-	char (*bd_ptr)[N][200];
+	/* Retira uma matriz requisitada do bd e a retorna na forma de string, pronta para ser impressa */
 
-	strcat(key, _key);
-	strcat(key, "\"");
+	// Definindo variáveis
+	char result[2048] = "", // Para armazenar o resultado
+	key[200] = "\"", // A palavra_chave em formato string
+	*ptr, // Para retornar o resultado
+	(*bd_ptr)[N][200]; // Ponteiro para o bd
 
-	switch (c_bd)
+	strcat(key, _key); // Copia a palavra chave
+	strcat(key, "\""); // Termina de envolvê-la em parênteses
+
+	switch (c_bd) // Verifica qual é a array correta
 	{
-		case 1:
-			bd_ptr = bd_alunos_arr;
-			break;
+		case 1: // Caso seja alunos
+			bd_ptr = bd_alunos_arr; // seta o ponteiro
+			break; // Encerra o laço
 		case 2:
 			bd_ptr = bd_cursos_arr;
 			break;
@@ -128,35 +140,40 @@ char* get_table(int c_bd, int M, int N, char *_key, char *key_list[8])
 			break;
 	}
 
-	for (int i = 0; i < M; i++)
+	for (int i = 0; i < M; i++) // Inicia o laço para encontrar os dados corretos
 	{
-		if(strcmp(bd_ptr[i][0], key) == 0) {
-			for (int j = 0; j < N; j++)
+		if(strcmp(bd_ptr[i][0], key) == 0) { // Caso tenha encontrado os dados
+			for (int j = 0; j < N; j++) // Laço para capturar os dados
 			{
-				strcat(result, "\n");
-				strcat(result, key_list[j]);
-				strcat(result, ": " green);
-				strcat(result, bd_ptr[i][j]);
-				strcat(result, default);
+				strcat(result, "\n"); // No resultado, quebra uma linha
+				strcat(result, key_list[j]); // No resultado, insere o tipo de dado
+				strcat(result, ": " green); // No resultado, insere um : e muda de cor
+				strcat(result, bd_ptr[i][j]); // No resultado, insere o dado
+				strcat(result, default); // No resultado, volta pra cor padrão
 			}
 
-			ptr = result;
-			return ptr;
+			ptr = result; // Define o ponteiro 
+			return ptr; // Encerra a função
 		}
 	}
-	return "⤬";
+	return "⤬"; // Caso os dados não sejam encontrados
 }
 
 int get_table_position(int c_bd, int M, int N, char *_key)
 {
-	char key[200] = "\"", (*bd_ptr)[N][200];
-	strcat(key, _key);
-	strcat(key, "\"");
-	switch (c_bd)
+	/* Retorna a posição de dados dentro da matriz do bd */
+
+	// Definindo variáveis
+	char key[200] = "\"", // A palavra_chave em formato string
+	 (*bd_ptr)[N][200]; // Ponteiro para o bd
+
+	strcat(key, _key); // Copia a palavra chave
+	strcat(key, "\""); // Termina de envolvê-la em parênteses
+	switch (c_bd) // Verifica qual é a array correta
 	{
-		case 1:
-			bd_ptr = bd_alunos_arr;
-			break;
+		case 1: // Caso seja alunos
+			bd_ptr = bd_alunos_arr; // seta o ponteiro
+			break; // Encerra o laço
 		case 2:
 			bd_ptr = bd_cursos_arr;
 			break;
@@ -171,22 +188,25 @@ int get_table_position(int c_bd, int M, int N, char *_key)
 			break;
 	}
 
-	for (int i = 0; i < M; i++)
+	for (int i = 0; i < M; i++) // Inicia o laço para encontrar a posição
 	{
-		if(strcmp(bd_ptr[i][0], key) == 0) {
-			return i;
+		if(strcmp(bd_ptr[i][0], key) == 0) { // Caso tenha encontrado
+			return i; // Encerra e retorna a posição
 		}
 	}
 }
 
-void insert_to_bd(int c_bd, int M, int N, char **table) { 
-	int lpos_A, lpos_B;
-	char (*bd_ptr)[N][200];
-	switch (c_bd)
+int insert_to_bd(int c_bd, int M, int N, char **table, int alt_element_pos) { 
+	/* Insere uma matriz separada dentro de uma das matrizes do bd */
+
+	// Definindo variáveis
+	char (*bd_ptr)[N][200]; // Ponteiro para o bd
+
+	switch (c_bd) // Verifica qual é a array correta
 	{
-		case 1:
-			bd_ptr = bd_alunos_arr;
-			break;
+		case 1:  // Caso seja alunos
+			bd_ptr = bd_alunos_arr;  // seta o ponteiro
+			break;  // Encerra o laço
 		case 2:
 			bd_ptr = bd_cursos_arr;
 			break;
@@ -200,21 +220,22 @@ void insert_to_bd(int c_bd, int M, int N, char **table) {
 			bd_ptr = bd_professores_arr;
 			break;
 	}
-	for (int i = 0; i < M; i++)
+	for (int i = 0; i < M; i++) // Laço i para encontrar a primeira posição vazia na matriz
 	{
-		for (int j = 0; j < N; j++)
+		for (int j = 0; j < N; j++) // Laço j para encontrar a primeira posição vazia na matriz
 		{
-			if(strcmp(bd_ptr[i][j], "") == 0) {
-				for (int k = 0; k < N; k++)
+			if(strcmp(bd_ptr[i][j], "") == 0 || alt_element_pos > 0) { // Caso tenha encontrado
+				for (int k = 0; k < N; k++) // Laço para inserir os dados na posição posição
 				{
-					char info[200] = "\0";
-					strcat(info, "\"");
-					strcat(info, table[k]);
-					strcat(info, "\"");
-					strcpy(bd_ptr[i][k], info);
+					if(alt_element_pos > 0) i = alt_element_pos;
+					char info[200] = "\0"; // Auxilia na inserção dos dados
+					strcat(info, "\""); // Na variável info, insere uma "
+					strcat(info, table[k]); // Na variável info, insere um dado
+					strcat(info, "\""); // Na variável info, insere outra "
+					strcpy(bd_ptr[i][k], info); // Salva o dado na matriz global
 				}
-				save_bd();
-				return 0;
+				save_bd(); // Salva o banco de dados
+				return 0; // Encerra a função
 			}
 		}
 	}
@@ -222,12 +243,14 @@ void insert_to_bd(int c_bd, int M, int N, char **table) {
 
 void delete_element(int c_bd, int M, int N, int element_pos)
 {
-	char (*bd_ptr)[N][200];
-	switch (c_bd)
+	/* Deleta uma sub-matriz da matriz global do bd */
+
+	char (*bd_ptr)[N][200]; // Ponteiro para o bd
+	switch (c_bd) // Verifica qual é a array correta
 	{
-		case 1:
-			bd_ptr = bd_alunos_arr;
-			break;
+		case 1: // Caso seja alunos
+			bd_ptr = bd_alunos_arr; // seta o ponteiro
+			break; // Encerra o laço
 		case 2:
 			bd_ptr = bd_cursos_arr;
 			break;
@@ -242,10 +265,10 @@ void delete_element(int c_bd, int M, int N, int element_pos)
 			break;
 	}
 
-	for(int i = element_pos; i < M; i++)
-		for(int j = 0; j < N; j++)
-        	strcpy(bd_ptr[i][j], bd_ptr[i+1][j]);
-	save_bd();
+	for(int i = element_pos; i < M; i++) // Laço i para ler a sub-matriz
+		for(int j = 0; j < N; j++) // Laço j para ler a sub-matriz
+        	strcpy(bd_ptr[i][j], bd_ptr[i+1][j]); // Deleta um dado
+	save_bd(); // Salva o banco de dados
 }
 
 char construct_bd_string(char *which_bd, char *file_path, int table_range, const int VALUE_RANGE)
@@ -313,10 +336,7 @@ char construct_bd_string(char *which_bd, char *file_path, int table_range, const
 
 char get_bd_as_a_vector(char *bd, char *which_bd, const int TABLE_RANGE)
 {
-	// --------------------------------------- Propósito --------------------------------------------//
-	// É selecionado qual arquivo quer manipular. Faz uma cópia temporária deste e armazena suas     //
-	// informações em formato de array, para que possa ser mais facilmente usado ao longo do produto //
-	// ----------------------------------------------------------------------------------------------//
+	/* É selecionado qual arquivo quer manipular. Faz uma cópia temporária deste e armazena suas informações em formato de matriz */
 
 	// Definindo funções
 	int get_substr_position(char *source, char *substr);
@@ -389,9 +409,7 @@ char get_bd_as_a_vector(char *bd, char *which_bd, const int TABLE_RANGE)
 
 int get_substr_position(char *source, char *substr)
 {
-	// --------------------------------------- Propósito --------------------------------------------//
-	// Retorna a posição de uma substring em uma string, encontrada através do parâmetro "source"    //
-	// ----------------------------------------------------------------------------------------------//
+	/* Retorna a posição de uma substring em uma string */
 
 	// Definindo variáveis
 	char *index;	  // Para encontrar a substring
