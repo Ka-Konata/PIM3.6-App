@@ -11,18 +11,18 @@ char *disciplina_key_list[8] = {"codigo da disciplina", "nome da disciplina", "c
 char *professor_key_list[8] = {"numero da funcional", "nome completo", "titularidade", "RG", "CPF", "CPTS", "telefone", "e-mail"};
  
 // Matrizes para EXEMPLOS de como os dados devem ser informados pelos usuários
-char *aluno_exemples[8] = {"A001", "pedro alberto", "1234567890", "02212533330", "pedro alberto", "pedro alberto", "911119999", "exemplo@gmail.com"};
+char *aluno_exemples[8] = {"A001", "pedro alberto", "1234567890", "02212533330", "pedro alberto", "pedro alberto", "61 911119999", "exemplo@gmail.com"};
 char *curso_exemples[8] = {"C01", "Engenharia de Software", "3000", ""};
 char *turma_exemples[8] = {"T001", "DS2P30", "", "50"};
 char *disciplina_exemples[8] = {"D001", "Matematica para Computacao", "6", "50", ""};
-char *professor_exemples[8] = {"123456", "pedro alberto", "", "1234567890", "02212533330", "1111111 1111 DF", "911119999", "exemplo@gmail.com"};
+char *professor_exemples[8] = {"123456", "pedro alberto", "", "1234567890", "02212533330", "1111111 1111 DF", "61 911119999", "exemplo@gmail.com"};
  
 // Matrizes para REQUISITOS para cadastrar dados
-char *aluno_requirements[8] = {"nao inclua espacos, de preferencia apenas letras e numeros", "somente letras, inclua espacos", "somente numeros, sem  simbolos ou espacos", "somente numeros, sem  simbolos ou espacos", "somente letras, inclua espacos", "somente letras, inclua espacos", "NAO COLOQUE O +55, somente numeros, sem  simbolos ou espacos, o nono digito (9) e obrigatorio", "obrigatorio incluir @ e provedor"};
+char *aluno_requirements[8] = {"nao inclua espacos, de preferencia apenas letras e numeros", "somente letras, inclua espacos", "somente numeros, sem  simbolos ou espacos", "somente numeros, sem  simbolos ou espacos", "somente letras, inclua espacos", "somente letras, inclua espacos", "NAO COLOQUE O +55, insira seu DDD e resto do telefone separados por um espaco, o nono digito (9) e obrigatorio", "obrigatorio incluir @ e provedor"};
 char *curso_requirements[8] = {"nao inclua espacos, de preferencia apenas letras e numeros", "somente letras, inclua espacos", "em horas, somente numeros, sem espacos ou simbolos", "Escreva exatamente como demonstrado abaixo. \nAreas de Conhecimento Disponiveis: \n\nCiencias Exatas e da Terra \nCiencias Biologicas \nEngenharias \nCiencias da Saude \nCiencias Agrarias \nLinguistica, Letras e Artes \nCiencias Sociais Aplicadas \nCiencias Humanas\n"};
 char *turma_requirements[8] = {"nao inclua espacos, de preferencia apenas letras e numeros", "somente letras e numeros, sem simbolos ou espacos", "Escreva exatamente como demonstrado abaixo. \nPeriodos Disponiveis: \n\nmanha \ntarde \nnoite\n", "Somente numeros"};
 char *disciplina_requirements[8] = {"nao inclua espacos, de preferencia apenas letras e numeros", "somente letras, sem simbolos", "em horas, somente numeros, sem espacos ou simbolos", "Somente numeros", "Escreva exatamente como demonstrado abaixo. \nTipos Disponiveis: \n\npresencial \nead\n"};
-char *professor_requirements[8] = {"Somente numeros (6 digitos), sem simbolos ou espacos", "somente letras, inclua espacos", "Escreva exatamente como demonstrado abaixo. \nTipos Disponiveis: \n\especialista \nmestre \ndoutor\n", "somente numeros, sem  simbolos ou espacos", "somente numeros, sem  simbolos ou espacos", "Insira o Numero, Serie e UF da CTPS, separados por espacos", "NAO COLOQUE O +55, somente numeros, sem  simbolos ou espacos, o nono digito (9) e obrigatorio", "obrigatorio incluir @ e provedor"};
+char *professor_requirements[8] = {"Somente numeros (6 digitos), sem simbolos ou espacos", "somente letras, inclua espacos", "Escreva exatamente como demonstrado abaixo. \nTipos Disponiveis: \n\especialista \nmestre \ndoutor\n", "somente numeros, sem  simbolos ou espacos", "somente numeros, sem  simbolos ou espacos", "Insira o Numero, Serie e UF da CTPS, separados por espacos", "NAO COLOQUE O +55, insira seu DDD e resto do telefone separados por um espaco, o nono digito (9) e obrigatorio", "obrigatorio incluir @ e provedor"};
  
 // Matrizes para FUNÇÔES de validação para cada tipo de dado
 int (*aluno_validate_func[8])(char *) = {validate_codigo, validate_nome, validate_num, validate_CPF, validate_nome, validate_nome, validate_telefone, validate_email};
@@ -43,7 +43,7 @@ int main(void)
     // Tela Inicial
     printf("\n\n            ____                  __      ___           _       \n           |  _ \\                 \\ \\    / (_)         | |      \n           | |_) | ___ _ __ ___    \\ \\  / / _ _ __   __| | ___  \n           |  _ < / _ \\ '_ ` _ \\    \\ \\/ / | | '_ \\ / _` |/ _ \\ \n           | |_) |  __/ | | | | |    \\  /  | | | | | (_| | (_) |\n           |____/ \\___|_| |_| |_|     \\/   |_|_| |_|\\__,_|\\___/"); // Mensagem de "bem vindo"
     printf("\n\n\n\n\n           PIM 2nd Semestre | Grupo: DS2.7"); // Exibe informações sobre o trabalho e sobre o grupo
-    printf("\n           Nomes: Victor G. Ramos, Jeferson"); // Exibe nomes dos parqicipantes do grupo
+    printf("\n           RA's: N913843, F346862, G6257F0, F3465J9, G6257D4 e F3467G9"); // Exibe os RA’s dos participantes do grupo
     check_bd(); // Tenta encontrar os arquivos .json, e os cria caso não encontre
     load_bd();  // Carrega o as informações já salvas
     printf("\n\n           Pressione ENTER para continuar...");

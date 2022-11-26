@@ -157,13 +157,24 @@ int validate_telefone(char *telefone)
 {
 	/* Para validação de número de telefone */
 
-	if (strlen(telefone) != 9) // Caso não tenha 9 caracteres
+	if (strlen(telefone) != 12) // Caso não tenha 12 caracteres
 	{
-			global_error_message = "\nDeve conter exatamente 9 numeros. Nao esqueca de incluir o nono digito.\n\n"; // Altera a mensagem global de erro
+			global_error_message = "\nDeve conter exatamente 12 caracteres. Nao esqueca de incluir o nono digito.\n\n"; // Altera a mensagem global de erro
 			return 0; // Encerra a função informando a falha
 	}
-	int validate_num(char *num); // Define a função
-	if(validate_num(telefone) == 1) return 1; return 0; // Incrementa a validação de número
+
+	for(int i=0; i<strlen(telefone); i++) // Laço para verificar cada caractere
+	{
+		if(i == 2 && !isspace(telefone[i])){ // Caso não seja separado por espaço
+			global_error_message = "\nDeve haver um espaco separando o DDD do resto do numero.\n\n"; // Altera a mensagem global de erro
+			return 0; // Encerra a função informando a falha
+		}
+		if(i != 2 && !isdigit(telefone[i])) { // Caso o caractere não seja um número
+			global_error_message = "\nDeve conter apenas numeros e um espaco para separacao.\n\n"; // Altera a mensagem global de erro
+			return 0; // Encerra a função informando a falha
+		}
+	}
+	return 1;
 }
 
 int validate_email(char *email)

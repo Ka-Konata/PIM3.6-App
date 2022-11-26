@@ -9,8 +9,7 @@ int register_loop(int type, int range, char *key_list[8], char *requirements[8],
 
     // Definindo variáveis
     char *value_list[8] = {'\0'}, // Para armazenar os dados como ponteiros
-    value[8][200] = {'\0'}, // Para armazenar os dados como strings
-    number_sub[11] = "+55 "; // Para dados do tipo "telefone"
+    value[8][200] = {'\0'}; // Para armazenar os dados como strings
     int cad_stop = 0; // Flag
 
     system("cls"); // Limpa a tela
@@ -24,10 +23,6 @@ int register_loop(int type, int range, char *key_list[8], char *requirements[8],
         if(type == 5 && i == 2) type_choices = 3; // Caso o tipo de cadastro seja: PROFESSOR
         strcpy(value[i], ask_and_validate_info(key_list, value_list, range, title, key_list[i], requirements[i], exemples[i], validate_func[i], 0, alt_pos, table_to_change)); // Executa a função que exibe a tela de cadastro faz a entrada de dados
 
-        if (type == 1 || type == 5) if(i == 6) { // Caso o tipo de dado a ser informado seja um telefone
-            strcat(number_sub, value[6]); // Acrescenta um +55 no dado informado
-            strcpy(value[6], number_sub); // Salva o dado alterado
-        }
         value_list[i] = value[i]; // Copia o dado informado
         if (strcmp(value_list[i], "⤬") == 0) {cad_stop = 1; break;} // Caso o usuário queria cancelar
     } 
