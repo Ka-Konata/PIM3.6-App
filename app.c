@@ -85,15 +85,15 @@ int main(void)
                     scanf("%*[^\n]"); // Caso dê erro resolve a situação
  
                 if (answer_cadastrar == 1) // Caso o usuário queira cadastrar um aluno
-                   register_loop(1, 8, aluno_key_list, aluno_requirements, aluno_exemples, aluno_validate_func, "ALUNO", 500, 8, 0); // Executa a função de cadastro
+                   register_loop(1, 8, aluno_key_list, aluno_requirements, aluno_exemples, aluno_validate_func, "ALUNO", 501, 8, 0); // Executa a função de cadastro
                 else if (answer_cadastrar == 2) // Caso o usuário queira cadastrar um curso
-                   register_loop(2, 4, curso_key_list, curso_requirements, curso_exemples, curso_validate_func, "CURSO", 20, 4, 0); // Executa a função de cadastro
+                   register_loop(2, 4, curso_key_list, curso_requirements, curso_exemples, curso_validate_func, "CURSO", 21, 4, 0); // Executa a função de cadastro
                 else if (answer_cadastrar == 3) // Caso o usuário queira cadastrar uma turma
-                    register_loop(3, 4, turma_key_list, turma_requirements, turma_exemples, turma_validate_func, "TURMA", 100, 4, 0); // Executa a função de cadastro
+                    register_loop(3, 4, turma_key_list, turma_requirements, turma_exemples, turma_validate_func, "TURMA", 101, 4, 0); // Executa a função de cadastro
                 else if (answer_cadastrar == 4) // Caso o usuário queira cadastrar uma disciplina
-                    register_loop(4, 5, disciplina_key_list, disciplina_requirements, disciplina_exemples, disciplina_validate_func, "DISCIPLINA", 300, 5, 0); // Executa a função de cadastro
+                    register_loop(4, 5, disciplina_key_list, disciplina_requirements, disciplina_exemples, disciplina_validate_func, "DISCIPLINA", 301, 5, 0); // Executa a função de cadastro
                 else if (answer_cadastrar == 5) // Caso o usuário queira cadastrar um professor
-                    register_loop(5, 8, professor_key_list, professor_requirements, professor_exemples, professor_validate_func, "PROFESSOR", 50, 8, 0); // Executa a função de cadastro
+                    register_loop(5, 8, professor_key_list, professor_requirements, professor_exemples, professor_validate_func, "PROFESSOR", 51, 8, 0); // Executa a função de cadastro
                 else if (answer_cadastrar == 6) // Caso o usuário queira voltar ao menu anterior
                 {
                     system("cls"); // Limpa a tela
@@ -131,37 +131,37 @@ int main(void)
                     search_loop(1, "", "", "", aluno_key_list, 0, 0, 1); // Impede um bug no algoritmo referente ao loop
                 if (answer_acessar == 1) // Caso o usuário queira pesquisar por um aluno
                 {
-                    pos = search_loop(1, "ALUNO", "Insira o numero de matricula", "A001", aluno_key_list, 500, 8, 0); // Executa a função de pesquisa
+                    pos = search_loop(1, "ALUNO", "Insira o numero de matricula", "A001", aluno_key_list, 501, 8, 0); // Executa a função de pesquisa
                     if (pos > 0) // Caso o usuário queira alterar os dados encontrados
-                        register_loop(1, 8, aluno_key_list, aluno_requirements, aluno_exemples, aluno_validate_func, "ALUNO", 500, 8, pos); // Executa a função de cadastro no modo de alteração
+                        register_loop(1, 8, aluno_key_list, aluno_requirements, aluno_exemples, aluno_validate_func, "ALUNO", 501, 8, pos); // Executa a função de cadastro no modo de alteração
                     system("cls");
                 }
                 else if (answer_acessar == 2) // Caso o usuário queira pesquisar por um curso
                 {
-                    pos = search_loop(2, "CURSO", "Insira o codigo do curso", "C01", curso_key_list, 20, 4, 0); // Executa a função de pesquisa
+                    pos = search_loop(2, "CURSO", "Insira o codigo do curso", "C01", curso_key_list, 21, 4, 0); // Executa a função de pesquisa
                     if (pos > 0) // Caso o usuário queira alterar os dados encontrados
-                        register_loop(2, 4, curso_key_list, curso_requirements, curso_exemples, curso_validate_func, "CURSO", 20, 4, pos); // Executa a função de cadastro no modo de alteração
+                        register_loop(2, 4, curso_key_list, curso_requirements, curso_exemples, curso_validate_func, "CURSO", 21, 4, pos); // Executa a função de cadastro no modo de alteração
                     system("cls"); // Limpa a tela
                 }
                 else if (answer_acessar == 3) // Caso o usuário queira pesquisar por uma turma
                 {
-                    pos = search_loop(3, "TURMA", "Insira o codigo da turma", "T01", turma_key_list, 100, 4, 0); // Executa a função de pesquisa
+                    pos = search_loop(3, "TURMA", "Insira o codigo da turma", "T01", turma_key_list, 101, 4, 0); // Executa a função de pesquisa
                     if (pos > 0) // Caso o usuário queira alterar os dados encontrados
-                        register_loop(3, 4, turma_key_list, turma_requirements, turma_exemples, turma_validate_func, "TURMA", 100, 4, pos); // Executa a função de cadastro no modo de alteração
+                        register_loop(3, 4, turma_key_list, turma_requirements, turma_exemples, turma_validate_func, "TURMA", 101, 4, pos); // Executa a função de cadastro no modo de alteração
                     system("cls"); // Limpa a tela
                 }
                 else if (answer_acessar == 4) // Caso o usuário queira pesquisar por uma disciplina
                 {
-                    pos = search_loop(4, "DISCIPLINA", "Insira o codigo da disciplina", "D001", disciplina_key_list, 300, 5, 0); // Executa a função de pesquisa
+                    pos = search_loop(4, "DISCIPLINA", "Insira o codigo da disciplina", "D001", disciplina_key_list, 301, 5, 0); // Exec1uta a função de pesquisa
                     if (pos > 0) // Caso o usuário queira alterar os dados encontrados
-                        register_loop(4, 5, disciplina_key_list, disciplina_requirements, disciplina_exemples, disciplina_validate_func, "DISCIPLINA", 300, 5, pos); // Executa a função de cadastro no modo de alteração
+                        register_loop(4, 5, disciplina_key_list, disciplina_requirements, disciplina_exemples, disciplina_validate_func, "DISCIPLINA", 301, 5, pos); // Executa a função de cadastro no modo de alteração
                     system("cls"); // Limpa a tela
                 }
                 else if (answer_acessar == 5) // Caso o usuário queira pesquisar por um professor
                 {
-                    pos = search_loop(5, "PROFESSOR", "Insira o numero funcional", "123456", professor_key_list, 50, 8, 0); // Executa a função de pesquisa
+                    pos = search_loop(5, "PROFESSOR", "Insira o numero funcional", "123456", professor_key_list, 51, 8, 0); // Executa a função de pesquisa
                     if (pos == 1) // Caso o usuário queira alterar os dados encontrados
-                    register_loop(5, 8, professor_key_list, professor_requirements, professor_exemples, professor_validate_func, "PROFESSOR", 50, 8, pos);  // Executa a função de cadastro no modo de alteração
+                    register_loop(5, 8, professor_key_list, professor_requirements, professor_exemples, professor_validate_func, "PROFESSOR", 51, 8, pos);  // Executa a função de cadastro no modo de alteração
                     system("cls"); // Limpa a tela
                 }
                 else if (answer_acessar == 6) // Caso o usuário queira voltar ao menu anterior

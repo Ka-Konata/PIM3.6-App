@@ -28,11 +28,11 @@ char bd_turmas[BD_SIZE] = {0};
 char bd_disciplinas[BD_SIZE] = {0};
 char bd_professores[BD_SIZE] = {0};
 // Para armazenar as informações dos arquivos em formato de arrays
-char bd_alunos_arr[500][8][200];
-char bd_cursos_arr[20][4][200];
-char bd_turmas_arr[100][4][200];
-char bd_disciplinas_arr[300][5][200];
-char bd_professores_arr[50][8][200];
+char bd_alunos_arr[501][8][200];
+char bd_cursos_arr[21][4][200];
+char bd_turmas_arr[101][4][200];
+char bd_disciplinas_arr[301][5][200];
+char bd_professores_arr[51][8][200];
 char table_to_change[2048];
 
 void load_bd()
@@ -78,11 +78,11 @@ void save_bd()
 	// Definindo funções
 	char construct_bd_string(char *which_bd, char *file_path, int table_range, const int VALUE_RANGE);
 
-	construct_bd_string("alunos", BD_ALUNOS_PATH, 500, 8); // Para salvar a matriz de alunos
-	construct_bd_string("cursos", BD_CURSOS_PATH, 20, 4); // Para salvar a matriz de cursos
-	construct_bd_string("turmas", BD_TURMAS_PATH, 100, 4); // Para salvar a matriz de turmas
-	construct_bd_string("disciplinas", BD_DISCIPLINAS_PATH, 300, 5); // Para salvar a matriz de disciplinas
-	construct_bd_string("professores", BD_PROFESSORES_PATH, 50, 8); // Para salvar a matriz professores
+	construct_bd_string("alunos", BD_ALUNOS_PATH, 501, 8); // Para salvar a matriz de alunos
+	construct_bd_string("cursos", BD_CURSOS_PATH, 21, 4); // Para salvar a matriz de cursos
+	construct_bd_string("turmas", BD_TURMAS_PATH, 101, 4); // Para salvar a matriz de turmas
+	construct_bd_string("disciplinas", BD_DISCIPLINAS_PATH, 301, 5); // Para salvar a matriz de disciplinas
+	construct_bd_string("professores", BD_PROFESSORES_PATH, 51, 8); // Para salvar a matriz professores
 }
 
 void check_bd()
@@ -347,7 +347,7 @@ char get_bd_as_a_vector(char *bd, char *which_bd, const int TABLE_RANGE)
 		table[TABLE_RANGE][200],					 // Para armazenar temporariamente a informação adquirida
 		*bd_table,									 // Para auxiliar na separação das informações
 		separator[] = ",",							 // Separador
-		(*new_bd)[TABLE_RANGE][200];				 // *new_bd[500][4][200] // Ponteiro
+		(*new_bd)[TABLE_RANGE][200];				 // *new_bd[501][4][200] // Ponteiro
 	int run = 1, count = 0, i;						 // Flag e contadores
 
 	// Estrutura para verifica qual arquivo foi escolhido para processar
